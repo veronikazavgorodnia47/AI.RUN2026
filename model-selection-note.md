@@ -4,7 +4,7 @@
 **Author:** Veronika Zavgorodnia — UX/UI Designer  
 **Project:** Omnichannel Commerce Platform  
 **Task:** Generate a first-draft user journey map for the click-and-collect flow, tailored to regional requirements (Italy and Japan), using AI to synthesize research data and persona insights.  
-**Committed location:** [Repo path or shared folder URL]
+**Committed location:** https://github.com/veronikazavgorodnia47/AI.RUN2026
 
 ---
 
