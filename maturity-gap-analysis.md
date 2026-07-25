@@ -3,7 +3,7 @@
 **Date:** 2026-07-25
 **Author:** Veronika Zavgorodnia — UX/UI Designer
 **Project:** Omnichannel Commerce Platform
-**Committed location:** [Repo path]
+**Committed location:** https://github.com/veronikazavgorodnia47/AI.RUN2026
 
 ---
 
@@ -65,3 +65,25 @@
 | **Success metric** | 3 project deliverables completed with documented AI assistance, showing before/after comparison and time savings achieved |
 
 ---
+
+## Peer Review
+
+**Reviewer:** Anastasiia Yermolenko — UX Designer
+**Date reviewed:** 2026-07-25
+
+| Review question | Reviewer answer |
+|---|---|
+| Is the evidence for each dimension specific and observable — not aspirational? | Yes, the evidence describes current state accurately with specific examples like "Just created first shared prompt template in Kata 2, but this is the exception rather than the norm." |
+| Which score do you challenge, and why? | I challenge the Reusability score - should be L1.5 or borderline L2 because you've already created and shared a prompt template in DIAL with peer review, which shows movement toward shared artifacts even if it's early stage. |
+| Is each root cause a structural/behavioural cause — not a symptom? | Yes, both root causes identify structural gaps (no designated repository, no established workflow, no structured approach) rather than just describing symptoms. |
+| Are the success metrics measurable without asking the author? | Yes, both metrics are clearly measurable - "5 documented prompt templates committed" and "3 project deliverables completed with documented AI assistance" can be verified objectively. |
+| Would you sign off on this plan as a teammate? | Yes, the plan is realistic and actionable, with clear ownership and timeline that builds on work already started in the bootcamp. |
+
+---
+
+## Revision History
+
+| Version | Date | Change | Author |
+|---|---|---|---|
+| 1.0 | 2026-07-25 | Initial commit | Veronika Zavgorodnia |
+| 1.1 | 2026-07-25 | Post-review update: Kept Reusability at L1 after discussion - single template doesn't yet represent team norm | Veronika Zavgorodnia |
