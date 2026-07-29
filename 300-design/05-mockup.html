@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lo-fi: Click &amp; Collect Availability</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: monospace; background: #aaa; display: flex; justify-content: center; padding: 24px 12px; }
+
+.phone {
+  width: 375px;
+  background: #fff;
+  border: 3px solid #222;
+  min-height: 667px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---- screens ---- */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; min-height: 667px; }
+
+/* ---- nav bar ---- */
+.nav {
+  background: #222;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.nav-back {
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  padding: 2px 6px;
+  border: 1px solid #666;
+}
+.nav-title { font-size: 14px; }
+.screen-tag { margin-left: auto; font-size: 10px; color: #999; }
+
+/* ---- content area ---- */
+.content { padding: 14px 16px; flex: 1; }
+
+/* ---- state toggle tabs ---- */
+.state-tabs { display: flex; gap: 0; margin-bottom: 14px; border: 2px solid #222; }
+.state-tab {
+  flex: 1;
+  padding: 7px 4px;
+  font-size: 11px;
+  font-family: monospace;
+  background: #eee;
+  border: none;
+  border-right: 2px solid #222;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.3;
+}
+.state-tab:last-child { border-right: none; }
+.state-tab.active { background: #222; color: #fff; }
+
+.state-panel { display: none; }
+.state-panel.active { display: block; }
+
+/* ---- product page ---- */
+.product-img {
+  width: 100%;
+  height: 150px;
+  background: #ddd;
+  border: 2px dashed #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 12px;
+}
+.product-title { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+.product-price { font-size: 14px; color: #333; margin-bottom: 16px; }
+
+.section-rule {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.store-row { font-size: 13px; margin-bottom: 8px; }
+
+.avail-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+.badge {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid;
+  display: inline-block;
+}
+.badge-amber     { background: #FFB300; border-color: #c77800; color: #000; }
+.badge-dk-amber  { background: #d84e00; border-color: #8c2800; color: #fff; }
+
+.info-btn {
+  width: 20px; height: 20px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px;
+  font-style: italic;
+  cursor: pointer;
+  background: #fff;
+  flex-shrink: 0;
+  position: relative;
+}
+.info-btn:hover .tooltip { display: block; }
+.tooltip {
+  display: none;
+  position: absolute;
+  left: 26px;
+  top: -4px;
+  background: #222;
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  padding: 6px 8px;
+  width: 180px;
+  line-height: 1.4;
+  z-index: 10;
+  border: 1px solid #555;
+}
+
+.updated-text { font-size: 11px; color: #666; margin-bottom: 14px; }
+
+.fallback-label { font-size: 15px; font-weight: bold; margin-bottom: 8px; }
+.phone-link { font-size: 13px; }
+.phone-link a { color: #222; }
+
+.no-guarantee {
+  font-size: 11px;
+  color: #555;
+  border: 1px dashed #bbb;
+  padding: 7px 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+/* ---- buttons ---- */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  background: #222;
+  color: #fff;
+  border: 2px solid #000;
+  font-size: 14px;
+  font-family: monospace;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 14px;
+}
+.btn:hover { background: #444; }
+.btn-ghost {
+  background: #fff;
+  color: #222;
+  border: 2px solid #222;
+}
+.btn-ghost:hover { background: #eee; }
+
+/* ---- reserve screen ---- */
+.form-group { margin-bottom: 12px; }
+.form-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
+}
+.field-static {
+  padding: 8px 10px;
+  border: 2px solid #999;
+  font-size: 14px;
+  font-family: monospace;
+  width: 100%;
+  background: #f5f5f5;
+  color: #333;
+}
+.field-input {
+  padding: 8px 10px;
+  border: 2px solid #555;
+  font-size: 14px;
+  font-family: monospace;
+  width: 100%;
+  background: #fff;
+}
+
+/* ---- confirm screen ---- */
+.confirm-box {
+  border: 2px solid #222;
+  padding: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.confirm-row b { display: inline-block; width: 80px; color: #666; }
+
+.feedback-box {
+  border: 2px solid #222;
+  padding: 12px;
+}
+.feedback-q { font-size: 14px; font-weight: bold; margin-bottom: 12px; }
+.fb-btns { display: flex; gap: 10px; }
+.fb-btn {
+  flex: 1;
+  padding: 11px;
+  border: 2px solid #222;
+  font-size: 15px;
+  font-family: monospace;
+  cursor: pointer;
+  background: #fff;
+}
+.fb-btn:hover { background: #eee; }
+
+.thanks-msg {
+  display: none;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #444;
+  border: 1px dashed #bbb;
+  padding: 8px;
+  line-height: 1.5;
+}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ======= SCREEN 1: Product ======= -->
+  <div class="screen active" id="s1">
+    <div class="nav">
+      <span class="nav-back">←</span>
+      <span class="nav-title">Product</span>
+      <span class="screen-tag">1 / 3</span>
+    </div>
+    <div class="content">
+
+      <div class="product-img">[ product image ]</div>
+      <div class="product-title">Slim Chino Trousers — Navy, W32 L30</div>
+      <div class="product-price">€59.99</div>
+
+      <div class="section-rule">Click &amp; Collect — Availability</div>
+
+      <div class="state-tabs">
+        <button class="state-tab active" onclick="switchState(1)">Likely<br>available</button>
+        <button class="state-tab"        onclick="switchState(2)">Limited<br>availability</button>
+        <button class="state-tab"        onclick="switchState(3)">Check in<br>store</button>
+      </div>
+
+      <!-- State A: Likely available -->
+      <div class="state-panel active" id="p1">
+        <div class="store-row">Meridian — Dublin City Centre</div>
+        <div class="avail-row">
+          <span class="badge badge-amber">Likely available</span>
+          <span class="info-btn">i
+            <span class="tooltip">AI-estimated availability. Not a confirmed hold. Confirm at the counter.</span>
+          </span>
+        </div>
+        <div class="updated-text">Updated 12 min ago</div>
+        <button class="btn" onclick="go('s2')">Reserve for pickup →</button>
+      </div>
+
+      <!-- State B: Limited availability -->
+      <div class="state-panel" id="p2">
+        <div class="store-row">Meridian — Dublin City Centre</div>
+        <div class="avail-row">
+          <span class="badge badge-dk-amber">Limited availability</span>
+          <span class="info-btn">i
+            <span class="tooltip">Low stock estimate. May sell out before you arrive. Not a confirmed hold.</span>
+          </span>
+        </div>
+        <div class="updated-text">Updated 25 min ago</div>
+        <button class="btn" onclick="go('s2')">Reserve for pickup →</button>
+      </div>
+
+      <!-- State C: Fallback -->
+      <div class="state-panel" id="p3">
+        <div class="store-row">Meridian — Dublin City Centre</div>
+        <div class="fallback-label">Check in store</div>
+        <div class="phone-link"><a href="tel:+35312345678">+353 1 234 5678</a></div>
+        <div class="no-guarantee">Real-time data is unavailable for this location. Please call ahead before visiting.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======= SCREEN 2: Reserve ======= -->
+  <div class="screen" id="s2">
+    <div class="nav">
+      <span class="nav-back" onclick="go('s1')">←</span>
+      <span class="nav-title">Reserve for pickup</span>
+      <span class="screen-tag">2 / 3</span>
+    </div>
+    <div class="content">
+
+      <div class="form-group">
+        <label class="form-label">Store</label>
+        <div class="field-static">Meridian — Dublin City Centre</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Item</label>
+        <div class="field-static">Slim Chino Trousers — Navy, W32 L30</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your name</label>
+        <input class="field-input" type="text" placeholder="Enter name…" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="field-input" type="tel" placeholder="+353…" />
+      </div>
+
+      <div class="no-guarantee">
+        Item is not held. Availability is estimated and may change before you arrive.
+      </div>
+
+      <button class="btn" onclick="go('s3')">Reserve →</button>
+      <button class="btn btn-ghost" onclick="go('s1')" style="margin-top:8px;">Cancel</button>
+
+    </div>
+  </div>
+
+  <!-- ======= SCREEN 3: Pickup confirmation ======= -->
+  <div class="screen" id="s3">
+    <div class="nav">
+      <span class="nav-title">Pickup confirmation</span>
+      <span class="screen-tag">3 / 3</span>
+    </div>
+    <div class="content">
+
+      <div class="confirm-box">
+        <div class="confirm-row"><b>Store</b> Meridian — Dublin City Centre</div>
+        <div class="confirm-row"><b>Item</b> Slim Chino Trousers, Navy W32 L30</div>
+        <div class="confirm-row"><b>Ref</b> #CC-2024-8837</div>
+        <div class="confirm-row"><b>Status</b> Pending pickup</div>
+      </div>
+
+      <div class="feedback-box">
+        <div class="feedback-q">Was the item available when you arrived?</div>
+        <div class="fb-btns">
+          <button class="fb-btn" onclick="feedback('yes')">✓ &nbsp;Yes</button>
+          <button class="fb-btn" onclick="feedback('no')">✗ &nbsp;No</button>
+        </div>
+        <div class="thanks-msg" id="thanks"></div>
+      </div>
+
+      <button class="btn btn-ghost" onclick="go('s1')" style="margin-top:14px;">← Back to product</button>
+
+    </div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function switchState(n) {
+  document.querySelectorAll('.state-tab').forEach((t, i) => t.classList.toggle('active', i === n - 1));
+  document.querySelectorAll('.state-panel').forEach((p, i) => p.classList.toggle('active', i === n - 1));
+}
+
+function feedback(answer) {
+  const t = document.getElementById('thanks');
+  t.style.display = 'block';
+  t.textContent = answer === 'yes'
+    ? 'Thanks — glad it was there.'
+    : 'Thanks. We\'ll use this to improve our stock estimates.';
+  document.querySelector('.fb-btns').style.pointerEvents = 'none';
+  document.querySelector('.fb-btns').style.opacity = '0.4';
+}
+</script>
+</body>
+</html>
