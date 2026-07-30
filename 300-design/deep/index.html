@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AvailabilityAssistantCard — K 3.D.7 Token-Bound Prototype</title>
+<style>
+
+/* ================================================================
+   DESIGN TOKENS — sourced from 06-spec-and-ac.md
+   CSS property names map 1-to-1 with SPEC token names.
+   Confirm hex values against UUI library before build.
+   ================================================================ */
+:root {
+  --color-amber-500:   #F59E0B;   /* Badge fill — fresh / "Likely available"            */
+  --color-amber-700:   #B45309;   /* Badge fill — low-confidence / "Limited availability"*/
+  --color-neutral-900: #171717;   /* Strong / medium-weight text                        */
+  --color-neutral-600: #525252;   /* Body text: store name, stale/error message         */
+  --color-neutral-500: #737373;   /* Caption: freshness timestamp, feedback label       */
+  --color-neutral-200: #E5E5E5;   /* Skeleton fill                                      */
+  --color-blue-600:    #2563EB;   /* Text link ("Try again ›")                          */
+  --color-white:       #FFFFFF;
+
+  /* Non-spec supporting tokens (canvas/border only) */
+  --canvas:            #F3F4F6;
+  --border:            #E5E7EB;
+  --radius-card:       8px;
+  --radius-badge:      12px;
+  --radius-skeleton:   4px;
+  --card-width:        300px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--canvas);
+  padding: 32px 24px 64px;
+  color: var(--color-neutral-900);
+}
+
+/* ---- Page header ---- */
+.page-title   { font-size: 13px; font-weight: 700; color: var(--color-neutral-600); margin-bottom: 4px; }
+.page-meta    { font-size: 11px; color: var(--color-neutral-500); margin-bottom: 24px; line-height: 1.6; }
+.page-meta em { font-style: normal; background: #FEF3C7; border-radius: 3px; padding: 1px 4px; }
+
+/* ---- Section headings ---- */
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-neutral-500);
+  margin: 32px 0 12px;
+}
+
+/* ---- States row ---- */
+.states-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+/* ---- State column ---- */
+.state-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: var(--card-width);
+}
+
+.state-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--color-neutral-500);
+}
+
+/* Props annotation (shows the props driving this state) */
+.props-pill {
+  font-size: 10px;
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-200);
+  border-radius: 4px;
+  padding: 3px 7px;
+  font-family: 'Menlo', 'Consolas', monospace;
+  line-height: 1.6;
+}
+
+/* ================================================================
+   Panel [UUI: Panel — name UNCONFIRMED, confirm against UUI]
+   ================================================================ */
+.Panel {
+  width: var(--card-width);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--color-white);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ================================================================
+   Badge [UUI: Badge]
+   ================================================================ */
+.Badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: var(--radius-badge);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--color-white);
+}
+.Badge--amber-500 { background-color: var(--color-amber-500); }  /* fresh / Likely available      */
+.Badge--amber-700 { background-color: var(--color-amber-700); }  /* low-confidence / Limited avail*/
+
+/* ================================================================
+   Text [UUI: Text]
+   ================================================================ */
+.Text--body    { font-size: 13px; color: var(--color-neutral-600); line-height: 1.5; }
+.Text--caption { font-size: 11px; color: var(--color-neutral-500); line-height: 1.4; }
+.Text--medium  { font-size: 13px; font-weight: 500; color: var(--color-neutral-900); line-height: 1.5; }
+.Text--link    { font-size: 13px; color: var(--color-blue-600); cursor: pointer; text-decoration: underline; }
+
+/* ================================================================
+   IconButton [UUI: IconButton]
+   ================================================================ */
+.IconButton {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-neutral-500);
+  font-size: 13px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* ================================================================
+   Button [UUI: Button]
+   ================================================================ */
+.Button {
+  width: 100%;
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+}
+.Button--primary   { background: #111827; color: var(--color-white); }
+.Button--secondary { background: transparent; color: #111827; border: 1px solid #D1D5DB; }
+
+/* ================================================================
+   Skeleton [UUI: Skeleton — name UNCONFIRMED, confirm against UUI]
+   ================================================================ */
+.Skeleton {
+  height: 13px;
+  background: var(--color-neutral-200);  /* token: color.neutral-200 */
+  border-radius: var(--radius-skeleton);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+.Skeleton--60  { width: 60%; }
+.Skeleton--80  { width: 80%; }
+.Skeleton--100 { width: 100%; }
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .45; }
+}
+
+/* ================================================================
+   Tooltip [UUI: Tooltip] — shown inline for prototype visibility
+   ================================================================ */
+.Tooltip--inline {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--color-neutral-500);
+  background: #F9FAFB;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  line-height: 1.5;
+}
+
+/* ---- Divider ---- */
+.Divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 -16px;
+}
+
+/* ---- Badge + info row ---- */
+.badge-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- Feedback row [UUI: IconButton pair] ---- */
+.feedback-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ================================================================
+   Icon placeholders — replace with UUI Asset icons before build
+   Confirm all icon names against the UUI Assets library.
+   DO NOT use emoji — they render inconsistently across platforms.
+   ================================================================ */
+
+/* InfoOutline — circle with italic i */
+.icon-info {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-neutral-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  font-style: italic;
+  font-family: Georgia, serif;
+  color: var(--color-neutral-500);
+  pointer-events: none;
+}
+
+/* CheckmarkOutline / CloseOutline — check and cancel proxies */
+/* ✓ U+2713  ✗ U+2717 — pure Unicode text, not emoji */
+.icon-yes,
+.icon-no {
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ================================================================
+   Modal extension (PickupConfirmationModal)
+   ================================================================ */
+.modal-backdrop {
+  width: var(--card-width);
+  background: rgba(0,0,0,.08);
+  border-radius: var(--radius-card);
+  padding: 6px;
+}
+.modal-backdrop .Panel {
+  width: 100%;
+}
+
+/* ================================================================
+   AC annotation chips
+   ================================================================ */
+.ac-chip {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: #EEF2FF;
+  color: #4338CA;
+  border-radius: 3px;
+  padding: 1px 5px;
+  white-space: nowrap;
+}
+
+</style>
+</head>
+<body>
+
+<p class="page-title">AvailabilityAssistantCard — K 3.D.7 Token-Bound Prototype</p>
+<p class="page-meta">
+  Case A: Meridian Retail Group · Click-&amp;-collect availability assistant<br>
+  Tokens follow SPEC names from <code>06-spec-and-ac.md</code> · 7 states shown (5 card + 1 modal + 1 feedback)<br>
+  <em>Panel — confirm UUI name</em> &nbsp; <em>Skeleton — confirm UUI name</em> &nbsp;
+  All other component names match UUI: Badge, Text, IconButton, Button, Tooltip
+</p>
+
+<!-- ================================================================
+     AVAILABILITY ASSISTANT CARD — 5 states
+     ================================================================ -->
+<p class="section-title">AvailabilityAssistantCard — 5 states</p>
+<div class="states-row">
+
+  <!-- ── STATE 1: loading ───────────────────────────────────────── -->
+  <!-- AC3: WHEN isLoading == true → Skeleton rows, no partial data -->
+  <div class="state-col">
+    <span class="state-label">s1 · Loading <span class="ac-chip">AC3</span></span>
+    <code class="props-pill">isLoading: true</code>
+    <!-- Panel [UUI: Panel — confirm name] -->
+    <div class="Panel" data-state="loading">
+      <!-- Text [UUI: Text caption, neutral-500] -->
+      <span class="Text--caption">Checking availability…</span>
+      <!-- Skeleton × 4 [UUI: Skeleton — confirm name] | token: color.neutral-200 -->
+      <div class="Skeleton Skeleton--80"></div>
+      <div class="Skeleton Skeleton--100"></div>
+      <div class="Skeleton Skeleton--60"></div>
+      <div class="Skeleton Skeleton--80"></div>
+    </div>
+  </div>
+
+  <!-- ── STATE 2: fresh ─────────────────────────────────────────── -->
+  <!-- AC1: confidenceScore >= 0.70 AND sapSyncAge ≤ 30 → Badge amber-500 -->
+  <!-- AC4: state fresh → freshness inline; InfoOutline → Tooltip     -->
+  <div class="state-col">
+    <span class="state-label">s2 · Fresh ≥0.70 <span class="ac-chip">AC1</span> <span class="ac-chip">AC4</span></span>
+    <code class="props-pill">confidenceScore: 0.82 · sapSyncAge: 8</code>
+    <!-- Panel [UUI: Panel] -->
+    <div class="Panel" data-state="fresh">
+
+      <!-- Badge row: Badge + IconButton InfoOutline [UUI: Badge + IconButton] -->
+      <div class="badge-row">
+        <!-- Badge [UUI: Badge] | token: color.amber-500 -->
+        <span class="Badge Badge--amber-500">Likely available</span>
+        <!-- IconButton [UUI: IconButton] + Icon [UUI Asset: InfoOutline — confirm name] -->
+        <button class="IconButton" data-uui-icon="notification-info" title="Tooltip on tap">
+          <span class="icon-info">i</span>
+        </button>
+      </div>
+
+      <!-- Tooltip [UUI: Tooltip] — shown on InfoOutline tap; inline here for visibility -->
+      <div class="Tooltip--inline">↑ Tooltip on tap: "Estimated from store data — not a guarantee."</div>
+
+      <!-- Text: store selector [UUI: Text + IconButton — store selector] -->
+      <span class="Text--body">Oak Street · 0.3 km ›</span>
+
+      <!-- Text: freshness [UUI: Text caption, neutral-500] | AC4: always inline, not tooltip-only -->
+      <span class="Text--caption">Stock data updated 8 min ago</span>
+
+      <div class="Divider"></div>
+
+      <!-- Text: recovery path [UUI: Text — recovery, always visible] -->
+      <span class="Text--body">Prefer to call ahead?&nbsp;&nbsp;+44 20 7946 0958</span>
+
+      <!-- Button: primary CTA [UUI: Button primary] -->
+      <button class="Button Button--primary">Request pickup</button>
+
+      <!-- Feedback [UUI: IconButton pair] -->
+      <div class="feedback-row">
+        <span class="Text--caption">Was this helpful?</span>
+        <!-- Icon [UUI Asset: notification-done ✅] -->
+        <button class="IconButton" data-uui-icon="notification-done" aria-label="Yes">
+          <span class="icon-yes">✓</span>
+        </button>
+        <!-- Icon [UUI Asset: content-clear ✅] -->
+        <button class="IconButton" data-uui-icon="content-clear" aria-label="No">
+          <span class="icon-no">✗</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── STATE 3: low-confidence ───────────────────────────────── -->
+  <!-- AC1: confidenceScore < 0.70 AND sapSyncAge ≤ 30 → Badge amber-700 -->
+  <!-- AC4: freshness inline; recovery above CTA in medium weight          -->
+  <div class="state-col">
+    <span class="state-label">s3 · Low confidence &lt;0.70 <span class="ac-chip">AC1</span> <span class="ac-chip">AC4</span></span>
+    <code class="props-pill">confidenceScore: 0.55 · sapSyncAge: 12</code>
+    <!-- Panel [UUI: Panel] -->
+    <div class="Panel" data-state="low-confidence">
+
+      <!-- Badge row -->
+      <div class="badge-row">
+        <!-- Badge [UUI: Badge] | token: color.amber-700 -->
+        <span class="Badge Badge--amber-700">Limited availability</span>
+        <!-- Icon [UUI Asset: notification-info ✅] -->
+        <button class="IconButton" data-uui-icon="notification-info">
+          <span class="icon-info">i</span>
+        </button>
+      </div>
+
+      <!-- Text: store -->
+      <span class="Text--body">Oak Street · 0.3 km ›</span>
+
+      <!-- Text: freshness caption | AC4: always inline -->
+      <span class="Text--caption">Stock data updated 12 min ago</span>
+
+      <div class="Divider"></div>
+
+      <!-- Text: recovery path — Medium weight, above CTA | AC from SP2 -->
+      <span class="Text--medium">We'd recommend calling ahead before making the trip.&nbsp;&nbsp;+44 20 7946 0958</span>
+
+      <!-- Button: secondary CTA [UUI: Button secondary] -->
+      <button class="Button Button--secondary">Request pickup</button>
+
+      <!-- Feedback -->
+      <div class="feedback-row">
+        <span class="Text--caption">Was this helpful?</span>
+        <!-- Icon [UUI Asset: notification-done ✅] -->
+        <button class="IconButton" data-uui-icon="notification-done" aria-label="Yes">
+          <span class="icon-yes">✓</span>
+        </button>
+        <!-- Icon [UUI Asset: content-clear ✅] -->
+        <button class="IconButton" data-uui-icon="content-clear" aria-label="No">
+          <span class="icon-no">✗</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── STATE 4: stale ─────────────────────────────────────────── -->
+  <!-- AC2: sapSyncAge > 30 → Badge hidden, reason copy, storePhone, no CTA -->
+  <div class="state-col">
+    <span class="state-label">s4 · Stale &gt;30 min <span class="ac-chip">AC2</span></span>
+    <code class="props-pill">sapSyncAge: 38 · isLoading: false</code>
+    <!-- Panel [UUI: Panel] — no Badge, no CTA -->
+    <div class="Panel" data-state="stale">
+
+      <!-- Text: reason copy [UUI: Text body, neutral-600] — names the reason per AC2 -->
+      <span class="Text--body">We can't confirm stock right now — our store data hasn't refreshed in a while.</span>
+
+      <!-- Text: store [UUI: Text caption, neutral-500] -->
+      <span class="Text--caption">Oak Street · 0.3 km</span>
+
+      <div class="Divider"></div>
+
+      <!-- Text: manual path [UUI: Text medium, neutral-900] -->
+      <span class="Text--medium">Call Oak Street to check before travelling:&nbsp;&nbsp;+44 20 7946 0958</span>
+
+      <!-- ← no Button CTA — per SPEC and AC2 -->
+
+    </div>
+  </div>
+
+  <!-- ── STATE 5: error ─────────────────────────────────────────── -->
+  <!-- AC2: hasError == true → Badge hidden, error copy, storePhone, retry link, no CTA -->
+  <!-- AC6: retry is user-initiated only (link, not auto)                               -->
+  <div class="state-col">
+    <span class="state-label">s5 · Error / refusal <span class="ac-chip">AC2</span> <span class="ac-chip">AC6</span></span>
+    <code class="props-pill">hasError: true · isLoading: false</code>
+    <!-- Panel [UUI: Panel] — no Badge, no CTA -->
+    <div class="Panel" data-state="error">
+
+      <!-- Text: error copy [UUI: Text body, neutral-600] -->
+      <!-- Copy aligned to SPEC error state (patched from AC3 critique) -->
+      <span class="Text--body">Something went wrong checking availability for this store.</span>
+
+      <!-- Text: store [UUI: Text caption, neutral-500] -->
+      <span class="Text--caption">Oak Street · 0.3 km</span>
+
+      <div class="Divider"></div>
+
+      <!-- Text: manual path [UUI: Text medium, neutral-900] -->
+      <span class="Text--medium">Call Oak Street or check a nearby store:&nbsp;&nbsp;+44 20 7946 0958</span>
+
+      <!-- Text link: retry [UUI: Text link, blue] — user-initiated only | AC6 -->
+      <span class="Text--link">Try again ›</span>
+
+      <!-- ← no Button CTA — per SPEC -->
+
+    </div>
+  </div>
+
+</div><!-- /states-row -->
+
+
+<!-- ================================================================
+     EXTENSION: PickupConfirmationModal
+     ================================================================ -->
+<p class="section-title">PickupConfirmationModal — confirmation before pickup request</p>
+<div class="states-row">
+  <div class="state-col">
+    <span class="state-label">Modal — no-guarantee disclosure</span>
+    <code class="props-pill">storeName: "Oak Street" · onConfirm · onCancel</code>
+    <!-- Modal shown as flat card; disclosure appears BEFORE confirm action per SPEC -->
+    <div class="modal-backdrop">
+      <div class="Panel" data-component="PickupConfirmationModal">
+        <!-- Text: pickup summary -->
+        <span class="Text--body">You're requesting pickup at Oak Street.</span>
+        <!-- Text: no-guarantee disclosure [neutral-600] — mandatory, before confirm -->
+        <span class="Text--body">This is not a guaranteed hold — the item may sell before you arrive.</span>
+        <!-- Button: confirm [UUI: Button primary] | triggers onConfirm callback -->
+        <button class="Button Button--primary">Confirm pickup</button>
+        <!-- Button: cancel [UUI: Button secondary / ghost] | triggers onCancel callback -->
+        <button class="Button Button--secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ================================================================
+     EXTENSION: FeedbackPrompt
+     ================================================================ -->
+<p class="section-title">FeedbackPrompt — post-collection screen</p>
+<div class="states-row">
+  <div class="state-col">
+    <span class="state-label">Feedback — after pickup completed <span class="ac-chip">AC5</span></span>
+    <code class="props-pill">Trigger: "pickup completed" event — confirm with product</code>
+    <div class="Panel" data-component="FeedbackPrompt">
+      <!-- Content: [UUI: Text body + IconButton pair] -->
+      <div class="feedback-row">
+        <span class="Text--body">Was the item available when you arrived?</span>
+        <!-- IconButton pair [UUI: IconButton] -->
+        <!-- Icon [UUI Asset: notification-done ✅] -->
+        <button class="IconButton" data-uui-icon="notification-done" aria-label="Yes, available">
+          <span class="icon-yes">✓</span>
+        </button>
+        <!-- Icon [UUI Asset: content-clear ✅] -->
+        <button class="IconButton" data-uui-icon="content-clear" aria-label="No, not available">
+          <span class="icon-no">✗</span>
+        </button>
+      </div>
+      <!-- On CloseOutline (No) tap: log { store_id, sku, confidence_score, sap_sync_age, timestamp } — no PII -->
+      <!-- Logging destination: confirm analytics endpoint with backend before build -->
+      <span class="Text--caption">On CloseOutline tap — logs: store_id, sku, confidence_score, sap_sync_age, timestamp. No PII.</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
