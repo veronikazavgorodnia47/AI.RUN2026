@@ -1,0 +1,134 @@
+# Meridian Phase 1 — NFR Budgets (machine-readable)
+# Kata: K 4.W.7 | Human-readable twin: 06-nfrs.md
+
+nfrs:
+
+  - id: NFR-01
+    family: latency
+    name: EU checkout end-to-end latency
+    target:
+      p95_ms: 3000
+      note: >
+        PSD2 SCA adds a mandatory 500-1500ms floor on every EU card transaction.
+        Non-EU target is p95 < 1500ms (no SCA).
+    measurement:
+      method: synthetic canary + real-user tracing
+      tool: Datadog / Honeycomb
+      frequency: every 5 minutes
+      breach_condition: p95 > 3000ms for two consecutive 5-minute windows
+    source_constraint: PSD2 SCA mandatory on EU card payments (00-discovery-context.md regulatory layer)
+    adr_refs: [ADR-001, ADR-003]
+    owner: checkout-engineering
+
+  - id: NFR-02
+    family: latency
+    name: POS cart resolution latency
+    target:
+      cache_hit_p95_ms: 200
+      sap_fallback_p95_ms: 1000
+      degraded_mode_max_ms: 200
+      note: >
+        Degraded mode (SAP unreachable) must always respond under 200ms —
+        never block on a down SAP. Circuit breaker must trip before timeout.
+    measurement:
+      method: OpenTelemetry instrumentation on POS client GraphQL round-trip
+      breach_condition: cache-hit p95 > 200ms or degraded-mode response > 200ms
+    source_constraint: >
+      Store associates wait with customers; 1400 stores at peak.
+      David Park constraint: stores keep selling.
+    adr_refs: [ADR-001, ADR-002]
+    owner: platform-engineering
+
+  - id: NFR-03
+    family: reliability
+    name: Platform availability
+    target:
+      monthly_availability_pct: 99.95
+      max_downtime_min_per_month: 22
+      note: >
+        Degraded mode (availability data absent, checkout functional) does not
+        count as downtime. Covers web, mobile, and POS cart-bridge.
+    measurement:
+      method: synthetic uptime probes every 60s from three AWS regions
+      breach_condition: two consecutive probe failures from two or more regions simultaneously
+    source_constraint: >
+      Black Friday 2024 produced a 40-minute EU outage.
+      David Park hard veto on any SPOF across all POS terminals.
+    adr_refs: [ADR-002]
+    owner: sre
+
+  - id: NFR-04
+    family: reliability
+    name: Inventory cache max staleness
+    target:
+      max_staleness_min: 30
+      note: >
+        Structural floor set by SAP ECC batch export cycle (15-30 min).
+        sapSyncAgeMin must be surfaced to users on every availability response.
+    measurement:
+      method: Kafka consumer lag monitoring + Redis TTL expiry alerting
+      breach_condition: consumer lag > 5000 messages OR key TTL expires without Kafka refresh
+    source_constraint: >
+      SAP ECC batch export reality (assumption 1, 00-discovery-context.md).
+      Click-and-collect AI assistant stale threshold = 30 min (K 3.D.6 spec).
+    adr_refs: [ADR-001]
+    owner: platform-engineering
+
+  - id: NFR-05
+    family: quality
+    name: Phantom stock cancellation rate
+    target:
+      rate_pct_at_6mo_post_ga: 3.0
+      rate_pct_at_3mo_post_ga: 5.0
+      baseline_pct: 7.0
+      note: >
+        Cancellation reason code: STOCK_UNAVAILABLE_AT_PICKUP.
+        Baseline from SAP ECC historical data before Phase 1 GA.
+    measurement:
+      method: OMS cancellation reason code tagging
+      formula: STOCK_UNAVAILABLE_AT_PICKUP cancellations / total click-and-collect orders
+      frequency: monthly
+    source_constraint: >
+      7% cancellation rate named in brief as critical business failure mode.
+      Primary product motivation for inventory cache and AI availability assistant.
+    adr_refs: [ADR-001]
+    owner: product-sarah-chen
+
+  - id: NFR-06
+    family: cost
+    name: Infrastructure cost per checkout transaction at peak
+    target:
+      max_eur_per_transaction: 0.02
+      peak_load_rps: 8000
+      peak_duration_hours: 2
+      note: >
+        Includes EKS, Kafka MSK, Redis ElastiCache, RDS PostgreSQL, data transfer.
+        Excludes payment provider fees (pass-through).
+    measurement:
+      method: AWS Cost Explorer tagged per service; k6/Gatling load test at 8000 RPS
+      formula: infrastructure cost during 2h peak window / completed transactions
+      frequency: quarterly stage gate
+    source_constraint: >
+      $42M / 18-month program budget with quarterly stage gates (Eva Mueller).
+    adr_refs: []
+    owner: engineering-leads
+
+  - id: NFR-07
+    family: security
+    name: PCI scope and EU data residency
+    target:
+      pci:
+        card_data_outside_pci_boundary: 0
+        note: Zero PANs, CVVs, or track data in logs, traces, or analytics pipelines.
+      gdpr:
+        eu_pii_outside_approved_regions: 0
+        approved_regions: [eu-west-1, eu-central-1]
+        ccpa_deletion_sla_days: 30
+    measurement:
+      pci: automated secret-scanning and log-scanning on every deployment (Nightfall / AWS Macie); annual QSA audit
+      gdpr: EU PII data flow map reviewed each quarterly stage gate; deletion pipeline SLA in incident management
+    source_constraint: >
+      PCI-DSS Level 1. GDPR EU data residency. CCPA deletion rights.
+      (00-discovery-context.md regulatory layer.)
+    adr_refs: []
+    owner: security-and-legal
