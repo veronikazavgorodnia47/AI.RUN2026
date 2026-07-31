@@ -1,0 +1,54 @@
+C4Container
+    title Container Diagram - Meridian Phase 1 (Unified Identity + Cart + Checkout)
+
+    Person(customer, "Customer", "Web + mobile shopper")
+    Person(storeAssoc, "Store Associate", "In-store POS operator")
+
+    System_Ext(sap, "SAP ECC", "Inventory ground truth (on-prem) - read-only sync")
+    System_Ext(auth0, "Auth0", "Identity provider - OAuth 2.0 / OIDC")
+    System_Ext(stripe, "Stripe", "Payment processing + PSD2 SCA")
+    System_Ext(sendgrid, "SendGrid", "Transactional email")
+    System_Ext(crm, "Regional CRMs", "Salesforce / HubSpot / Dynamics")
+
+    System_Boundary(meridian, "Meridian Platform") {
+        Container(webApp, "Web App", "Next.js", "Server-rendered storefront - web shoppers")
+        Container(mobileApp, "Mobile App", "React Native", "Native iOS + Android app")
+        Container(posClient, "POS Client", "Custom terminal / Electron", "In-store terminal for associates")
+
+        Container(gateway, "Apollo GraphQL Gateway", "Node.js / Apollo Server", "Single API entry point; routes queries to downstream services; no business logic")
+
+        Container(identityService, "Identity Service", "Node.js", "Session management, account linking, loyalty identity lookup")
+        Container(cartService, "Cart Service", "Node.js", "Unified cart state across web, mobile, and POS")
+        Container(checkoutService, "Checkout Service", "Node.js", "Orchestrates PSD2 SCA, payment, and order creation")
+
+        ContainerQueue(eventBus, "Order Event Bus", "Kafka on AWS MSK", "Async eventing: OrderCreated, StockUpdated, CartMerged")
+        ContainerDb(inventoryCache, "Inventory Read Cache", "Redis on ElastiCache", "Near-real-time stock snapshot hydrated from SAP via Kafka")
+        ContainerDb(orderDb, "Order Database", "PostgreSQL on RDS", "Persistent order and cart state")
+    }
+
+    Rel(customer, webApp, "Browses and checks out via", "HTTPS")
+    Rel(customer, mobileApp, "Browses and checks out via", "HTTPS / push notifications")
+    Rel(storeAssoc, posClient, "Looks up customer cart and loyalty via", "LAN / HTTPS")
+
+    Rel(webApp, gateway, "Queries products, cart, and checkout via", "GraphQL / HTTPS")
+    Rel(mobileApp, gateway, "Queries products, cart, and checkout via", "GraphQL / HTTPS")
+    Rel(posClient, gateway, "Queries cart merge and identity lookup via", "GraphQL / HTTPS")
+
+    Rel(gateway, identityService, "Routes auth and session calls to", "REST / HTTPS")
+    Rel(gateway, cartService, "Routes cart read and write operations to", "REST / HTTPS")
+    Rel(gateway, checkoutService, "Routes checkout initiation to", "REST / HTTPS")
+
+    Rel(identityService, auth0, "Delegates token issuance and OIDC verification to", "OAuth 2.0 / OIDC / HTTPS")
+    Rel(identityService, crm, "Syncs customer profile updates to", "REST / HTTPS")
+
+    Rel(cartService, inventoryCache, "Reads per-SKU stock availability from", "TCP / Redis protocol")
+    Rel(cartService, orderDb, "Persists and reads cart state from", "SQL / TCP")
+
+    Rel(checkoutService, stripe, "Initiates payment and triggers PSD2 SCA via", "REST / HTTPS")
+    Rel(stripe, checkoutService, "Sends async payment confirmation webhooks to", "HTTPS webhook")
+    Rel(checkoutService, orderDb, "Writes confirmed order records to", "SQL / TCP")
+    Rel(checkoutService, eventBus, "Publishes OrderCreated events to", "AMQP / Kafka")
+    Rel(checkoutService, sendgrid, "Sends order confirmation emails via", "REST / HTTPS")
+
+    Rel(sap, eventBus, "Publishes StockUpdated events via CDC / batch export to", "Kafka Connect / SFTP")
+    Rel(eventBus, inventoryCache, "Hydrates inventory snapshot via Kafka consumer to", "AMQP / Kafka consumer")

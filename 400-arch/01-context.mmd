@@ -1,0 +1,25 @@
+C4Context
+    title System Context - Meridian Retail Group (Phase 1)
+
+    Person(customer, "Customer", "Shops online and in-store across 22 countries")
+    Person(storeAssoc, "Store Associate", "Operates POS; looks up customer carts and loyalty")
+    Person(marketingOps, "Marketing Ops", "Configures cross-channel campaigns and promotions")
+
+    System(meridian, "Meridian Platform", "Headless commerce platform: unified identity, cart, and checkout across web, mobile, and 1,400 POS terminals")
+
+    System_Ext(sap, "SAP ECC", "Inventory and finance ground truth (on-prem)")
+    System_Ext(auth0, "Auth0", "External identity provider - token issuance and verification")
+    System_Ext(stripe, "Stripe", "Payment processing and PSD2 SCA orchestration")
+    System_Ext(sendgrid, "SendGrid", "Transactional email delivery")
+    System_Ext(crm, "Regional CRMs", "6 regional CRM systems (Salesforce, HubSpot, Dynamics) - not migrated in this program")
+
+    Rel(customer, meridian, "Browses, adds to cart, and checks out via", "HTTPS")
+    Rel(storeAssoc, meridian, "Looks up customer cart and loyalty at POS via", "HTTPS / POS terminal")
+    Rel(marketingOps, meridian, "Manages campaigns and promotions via", "HTTPS")
+
+    Rel(meridian, sap, "Reads inventory stock levels from", "SFTP batch export / CDC")
+    Rel(meridian, auth0, "Authenticates and verifies user tokens via", "OAuth 2.0 / OIDC")
+    Rel(meridian, stripe, "Initiates and manages payments via", "REST / HTTPS")
+    Rel(stripe, meridian, "Sends async payment confirmation webhooks to", "HTTPS webhook")
+    Rel(meridian, sendgrid, "Sends order confirmation and transactional emails via", "REST / HTTPS")
+    Rel(meridian, crm, "Syncs customer profile and order updates to", "REST / HTTPS")
