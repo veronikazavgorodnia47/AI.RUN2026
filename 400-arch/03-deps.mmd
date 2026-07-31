@@ -1,0 +1,42 @@
+graph LR
+    subgraph POS_Client["POS Client (Electron)"]
+        POS["POS Client"]
+    end
+
+    subgraph Gateway_Layer["API Gateway Layer"]
+        GW["Apollo GraphQL Gateway"]
+    end
+
+    subgraph Services["Internal Services"]
+        CS["Cart Service"]
+        IS["Identity Service"]
+        CHK["Checkout Service"]
+    end
+
+    subgraph Data_Stores["Data Stores"]
+        IC["Inventory Cache - Redis"]
+        ODB["Order Database - PostgreSQL"]
+    end
+
+    subgraph External["External Systems"]
+        A0["Auth0"]
+        SAP["SAP ECC"]
+        STR["Stripe"]
+    end
+
+    POS -->|"GraphQL / HTTPS"| GW
+
+    GW -->|"REST / HTTPS - cart"| CS
+    GW -->|"REST / HTTPS - identity"| IS
+    GW -->|"REST / HTTPS - checkout"| CHK
+
+    CS -->|"Redis TCP - stock"| IC
+    CS -->|"SQL / TCP - cart state"| ODB
+    CS -.->|"SAP fallback on cache miss"| SAP
+
+    IS -->|"OAuth 2.0 / OIDC"| A0
+
+    CHK -->|"REST / HTTPS - PSD2 SCA"| STR
+    CHK -->|"SQL / TCP - order write"| ODB
+
+    SAP -.->|"Kafka - StockUpdated events"| IC

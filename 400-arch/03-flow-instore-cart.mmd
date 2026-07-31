@@ -1,0 +1,63 @@
+sequenceDiagram
+    autonumber
+    actor SA as Store Associate
+    participant POS as POS Client<br/>(Electron)
+    participant GW as Apollo Gateway<br/>(Node.js)
+    participant CS as Cart Service<br/>(Node.js)
+    participant IC as Inventory Cache<br/>(Redis)
+    participant IS as Identity Service<br/>(Node.js)
+    participant A0 as Auth0
+    participant SAP as SAP ECC<br/>(on-prem)
+
+    SA->>POS: Scans customer QR code<br/>(loyalty barcode)
+    Note over SA,POS: Trigger: customer arrives at checkout
+
+    POS->>GW: POST /graphql<br/>query { resolveCustomer(barcode) { cartId, loyaltyId } }<br/>[p95: <30ms LAN]
+
+    GW->>IS: GET /identity/resolve?barcode=...
+    Note over GW,IS: REST / HTTPS [p95: <50ms]
+
+    IS->>A0: GET /userinfo (token introspection)
+    Note over IS,A0: OAuth 2.0 / HTTPS [p95: <120ms]
+    A0-->>IS: { sub, email, loyalty_id }
+
+    IS-->>GW: { customer_id, cart_id, loyalty_id }
+    GW->>CS: GET /cart/{cart_id}
+    Note over GW,CS: REST / HTTPS [p95: <20ms]
+
+    CS->>IC: HGETALL cart:{cart_id}:inventory
+    Note over CS,IC: Redis TCP [p95: <5ms]
+
+    alt Cache hit - stock data fresh (sapSyncAge <= 30 min)
+        IC-->>CS: { sku_availability: [...], sync_age_min: N }
+        CS-->>GW: { cart_items: [...], availability: [...], sync_age_min: N }
+        GW-->>POS: { cartId, items, availability, confidenceScore, syncAge }
+        Note over GW,POS: GraphQL response [total p95: <200ms]
+        POS-->>SA: Cart displayed with availability confidence badges
+    else Cache miss or stale (sapSyncAge > 30 min)
+        IC-->>CS: MISS or stale TTL expired
+        CS->>SAP: GET /sap-adapter/stock?skus=...
+        Note over CS,SAP: REST adapter / SFTP fallback [p95: 400-800ms]
+
+        alt SAP reachable
+            SAP-->>CS: { sku_stock: [...] }
+            CS->>IC: HSET cart:{cart_id}:inventory ... EX 1800
+            Note over CS,IC: Backfill cache with 30-min TTL
+            CS-->>GW: { cart_items: [...], availability: [...], sync_age_min: 0 }
+            GW-->>POS: { cartId, items, availability, confidenceScore: fresh }
+            Note over GW,POS: Degraded latency path [total p95: <1000ms]
+            POS-->>SA: Cart displayed - data refreshed from SAP
+        else SAP unreachable
+            SAP-->>CS: Timeout / connection error
+            CS-->>GW: { cart_items: [...], availability: null, degraded: true }
+            GW-->>POS: { cartId, items, availability: null, degraded: true }
+            POS-->>SA: Cart displayed - "Confirm availability with stock room"<br/>(degraded mode banner)
+        end
+    end
+
+    SA->>POS: Confirms item and initiates in-store checkout
+    POS->>GW: mutation { mergeCartToCheckout(cartId, storeId) }
+    GW->>CS: POST /cart/{cart_id}/merge-checkout
+    CS-->>GW: { checkout_session_id }
+    GW-->>POS: { checkoutSessionId }
+    Note over SA,POS: Handoff to checkout flow (out of scope for this diagram)
