@@ -3,6 +3,14 @@
 
 > Each pattern is placed — named component, named constraint, named risk if omitted. No abstract descriptions.
 
+| Pattern | Placed at | Constraint addressed | Risk if omitted |
+|---|---|---|---|
+| Strangler Fig | Apollo Gateway + per-region routing | No rip-and-replace; 22 divergent legacy stacks | Big-bang cutover; store downtime during rollout |
+| Outbox | Cart Service + Checkout Service | Dual-write atomicity to PostgreSQL + Kafka | Silent event loss on crash; phantom stock worsens |
+| Bulkhead | Checkout Service — per payment adapter | Multi-provider payments; PSD2 SCA on EU flows | One slow provider exhausts shared threads globally |
+| Circuit Breaker | Checkout (per provider) + Cart (SAP fallback) | Provider outages must not cascade; SAP not on hot path | Timeout storm under load; repeat of 2024 EU outage |
+| BFF | Apollo Gateway — Web / Mobile / POS query shaping | Three surfaces with different data needs | Clients exposed to internal topology; POS over-fetches |
+
 ---
 
 ## 1. Strangler Fig
