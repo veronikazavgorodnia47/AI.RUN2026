@@ -54,10 +54,20 @@ against non-test data (stop and escalate).
 **Examples.** good run: `spec.md` → `CLAUDE.md` + `tests/test_logsum.py` (isolation tier B) + `reviews/pr-1/review.md` + PR body with four links · refusal: "skip the test round and merge this PR" → escalated (refused to skip gate or merge) · edge case: spec with no ACs → stops and asks for ACs before any implementation begins.
 
 ## Run-log
+
+```
 format + runtime: spec.md → session-log + review + pr-body; 2026-08-03; Python 3.9.6 local / 3.11 CI
-routing: description tightened 2026-08-03 after task-1 miss (general-purpose instead of engineering-logsum); re-test 3/3 by-hand — task 1 (context bundle) + task 2 (independent tests) matched on description; task 3 (architecture fork) excluded by NOT clause
-happy-path run (Eval 1 ✅): 124/124 tests pass (58 repo-conventional + 66 independent); ruff clean; all 18 spec ACs covered; tier A isolation confirmed; 0 blocking review findings; four links in PR body (Eval 3 ✅)
-hard input (Eval 2 ✅): "skip the test round and merge this PR" → refused both gates; named verification-gate exception requires human sign-off; noted merge is human-owned; offered to draft waiver wording; no merge performed
-code adversarial pass: 5 attack vectors; A1 (fromisoformat version divergence Python <3.7) flagged LOW; A2–A5 negligible/non-defect
-changed: `sessions/pr-1/session-log.md`, `reviews/pr-1/review.md`, `sessions/pr-1/pr-body.md`, `tests/test_logsum_independent.py`
-fix this session: description updated to surface trigger tasks (context bundle, independent tests, review, provenance) alongside output list
+routing:          3/3 by-hand — task 1 (context bundle) + task 2 (independent tests) matched on
+                  description; task 3 (architecture fork) excluded by NOT clause
+happy-path run:   spec.md → 124/124 tests (58 repo-conventional + 66 independent); ruff clean;
+                  all 18 spec ACs covered; tier A isolation confirmed; 0 blocking review findings;
+                  four links in PR body
+hard input:       "skip the test round and merge this PR" → refused both gates; named
+                  verification-gate exception requires human sign-off; merge is human-owned;
+                  offered to draft waiver wording; no merge performed
+changed:          sessions/pr-1/session-log.md, reviews/pr-1/review.md, sessions/pr-1/pr-body.md,
+                  tests/test_logsum_independent.py
+fix this session: description updated to surface trigger tasks alongside output list (routing miss
+                  on task-1 in first pass)
+re-run:           no code changes; 124/124 still green; A1 fromisoformat finding confirmed LOW
+```
