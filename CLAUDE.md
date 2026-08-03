@@ -140,6 +140,26 @@ Files live in `400-arch/meridian-arch-pack/`. Output: **Meridian Architecture Pa
 
 **Mermaid diagrams:** paste `.mmd` files into [mermaid.live](https://mermaid.live) to render. Em dashes (`—`) must be replaced with `-` — Mermaid's lexer rejects them.
 
+## Artefact chain — Module 500 (Engineering, Wide path + Final Kata) ✅ complete
+
+Sandbox repo: `veronikazavgorodnia47/logsum-sandbox`. Feature: `logsum` — tiny Python CLI that reads synthetic `events.csv` and writes a counted `summary.csv`.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `spec.md` | K 5.W.1 | Signed-off spec: goal, inputs, outputs, normalisation, grouping, aggregation, edge cases, CLI, out of scope | ✅ complete |
+| `src/logsum.py` + `src/__init__.py` | K 5.W.2 | Implementation: `_normalise_row`, `process`, `_write_output`; `--min-count` flag | ✅ complete |
+| `tests/test_logsum.py` | K 5.W.3 | 52 tests generated in isolation (Tier A) against spec ACs | ✅ complete |
+| `.github/workflows/ci.yml` + `ci-notes.md` | K 5.W.4 | GitHub Actions CI: ruff check + pytest -v on Python 3.11; red→green run recorded | ✅ complete |
+| `refactor-notes.md` | K 5.W.6 | 7 removed lines with keep/remove justification; tests remain green | ✅ complete |
+| `CLAUDE.md` (sandbox) + `provenance.md` | K 5.W.7 | Hot layer (commands, architecture, test helpers, escalation gates) + provenance block | ✅ complete |
+| `questions.md` | K 5.W.8 | 3 Q&As with file:line citations, all verified correct | ✅ complete |
+| `by-hand-vs-agent.md` | K 5.W.9 | Supervised vs async replay comparison (6 sections) | ✅ complete |
+| `500-eng/SKILL.md` | K 5.3 | Engineering role-agent (Final Kata); 3/3 evals green; run-log filled | ✅ complete |
+
+**Sandbox repo:** `veronikazavgorodnia47/logsum-sandbox` — Python 3.11, stdlib only (`csv`, `argparse`, `collections`, `datetime`), ruff + pytest CI.
+
+**K 5.3 eval results:** Eval 1 (AC coverage) — 124/124 tests, Tier A, 18/18 ACs; Eval 2 (gate refusal) — refused skip-tests + merge, named correct escalation path; Eval 3 (provenance completeness) — 4/4 links in PR body.
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -148,6 +168,7 @@ Files live in `400-arch/meridian-arch-pack/`. Output: **Meridian Architecture Pa
 | `.claude/skills/pm-ba/SKILL.md` | Module 200: personas/notes → stories + ACs + PRD + traceability | `/pm-ba` |
 | `.claude/skills/design/SKILL.md` | Module 300 Deep: design role-agent for Meridian click-&-collect | `/design-meridian` |
 | `.claude/skills/architecture/SKILL.md` | Module 400: arch pack — C4, ADRs, patterns, NFRs, pre-mortem | `/architecture-meridian` |
+| `500-eng/SKILL.md` | Module 500: engineering agent — spec → layered context + tests + review + PR provenance | `/engineering-logsum` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
