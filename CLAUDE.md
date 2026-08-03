@@ -6,7 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Veronika Zavgorodnia's learner project folder for the AI:RUN bootcamp (EPAM AI-Native SDLC program). Produces the artefact chain for **Case A: Meridian Retail Group** across modules. The curriculum itself lives in `curriculum-public-main/` (read-only — do not edit it). Module entry points are `modules/NNN-index.md`; canonical definitions are in `modules/000-glossary.md`.
 
-GitHub remote: `veronikazavgorodnia47/AI.RUN2026`. No local git repo — files are uploaded via the GitHub web UI. Hidden files (e.g. `.claude/`) require **Cmd + Shift + .** in Finder to reveal, or **Cmd + Shift + G** → paste the full path.
+GitHub remote: `veronikazavgorodnia47/AI.RUN2026`.
+
+```bash
+# Push to GitHub (SSH alias set up in ~/.ssh/config as github-airun)
+git add <files> && git commit -m "message" && git push git@github-airun:veronikazavgorodnia47/AI.RUN2026.git main
+```
+
+Hidden files (e.g. `.claude/`) require **Cmd + Shift + .** in Finder to reveal, or **Cmd + Shift + G** → paste the full path. The `.claude/` directory is gitignored — copy skill files to their module directory (e.g. `500-eng/SKILL.md`) to track them on GitHub.
 
 ## Reference case
 
