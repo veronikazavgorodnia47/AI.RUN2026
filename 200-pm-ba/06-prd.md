@@ -1,6 +1,6 @@
 ---
 consumes_from: 00-feature.md, 01-vision.md, 02-personas-journey.md, 04-stories-acs.md, 05-backlog-notes.md
-date: 2026-07-28
+date: 2026-07-29
 status: draft — pending OMS data-quality audit and S2 signal-availability spike
 ---
 
@@ -57,7 +57,9 @@ Both need one trustworthy signal before committing — no call, no heuristic.
 - Reservation CTA always visible; degraded-mode triggers logged + alerting if > 10% of checks in rolling hour
 
 **S5 — Size/colour-specific verdict** *(P2, low marginal effort)*
-- Phantom-stock rate signal calculated at SKU + size level; changing size or colour triggers a new query
+- Phantom-stock rate signal calculated at SKU + size level; changing size or colour clears the verdict and triggers a new query
+- New-season items with < 30 days size-level history fall back to SKU-level signal; that signal counts as unavailable against the 2-of-5 threshold
+- Full Gherkin ACs in `04-stories-acs.md`
 
 ---
 
@@ -65,7 +67,7 @@ Both need one trustworthy signal before committing — no call, no heuristic.
 
 | In | Out | Deferred |
 |---|---|---|
-| Availability verdict (S1) | Reserve-and-hold / slot locking | Data freshness indicator (S6) — no user research yet |
+| Availability verdict (S1, incl. Uncertain-CTA clause from S7) | Reserve-and-hold / slot locking | Data freshness indicator (S6) — no user research yet |
 | AI confidence scorer (S2) | In-store staff notifications | Auditability dashboard (S9) — post-launch |
 | Nearest alternative store (S3) | Stock replenishment triggers | Analytics by verdict type (S10) — BI/data track |
 | Degraded mode (S4) | Availability for delivery orders | Mobile optimisation polish (S8) — sprint 2 |

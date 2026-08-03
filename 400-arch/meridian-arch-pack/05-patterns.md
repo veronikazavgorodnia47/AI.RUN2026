@@ -37,6 +37,8 @@
 
 **Risk if omitted:** Dual writes (DB + Kafka in sequence without outbox) create a race condition. Under load or partial failure, events are lost silently. Inventory cache never gets the `StockUpdated` signal; click-and-collect availability diverges from reality — directly worsening the phantom-stock cancellation rate that Phase 1 exists to reduce.
 
+**Replay handling (added from adversarial pre-mortem S2-B3):** When SAP recovers after an extended outage, it emits a burst of accumulated `StockUpdated` events. The Kafka consumer must handle this replay without creating Redis write hotspots. Use a dedicated catch-up consumer group running at reduced throughput during replay. Consumer lag must be alerted at 10,000 messages. The `sapSyncAgeMin` field in API responses must reflect in-progress replay accurately so confidence states remain correct during catch-up.
+
 **Referenced in:** `02-containers.mmd` (`ContainerQueue(eventBus)`, `Rel(checkoutService, eventBus, "Publishes OrderCreated")`), `04-adr-001.md` (Kafka hydration path for inventory cache).
 
 ---

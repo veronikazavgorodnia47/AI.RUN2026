@@ -1,6 +1,6 @@
 ---
-consumes_from: 01-vision.md, 02-personas-journey.md, 03-competitors.md
-date: 2026-07-28
+consumes_from: 00-feature.md, opportunity-brief.md, 01-vision.md, 02-personas-journey.md, 03-competitors.md, 05-backlog-notes.md
+date: 2026-07-29
 ---
 
 ## User stories
@@ -13,7 +13,7 @@ date: 2026-07-28
 | S4 | As a click-&-collect shopper, I want the assistant to work even when live signals are unavailable, so that I'm not blocked from browsing or reserving. | P1 |
 | S5 | As a click-&-collect shopper, I want the availability check to be specific to my selected size and colour, so that the verdict reflects exactly what I'm buying. | P2 |
 | S6 | As a click-&-collect shopper, I want to see how fresh the availability data is, so that I can judge how much to trust the verdict. | P2 |
-| S7 | As a click-&-collect shopper who receives an Uncertain verdict, I want to still be able to reserve at my preferred store, so that the feature does not block my decision. | P2 |
+| ~~S7~~ | *(Merged into S1 — see S1 AC "Uncertain verdict — CTA visible". Removed as standalone story per backlog-notes.md decision.)* | — |
 | S8 | As a click-&-collect shopper on mobile, I want the verdict to be readable at a glance without interpreting stock numbers, so that I can decide in under 90 seconds. | P2 |
 | S9 | As a store operations manager, I want the assistant's verdicts to be auditable against actual collection outcomes, so that accuracy can be measured and improved. | P3 |
 | S10 | As a Meridian product analyst, I want to see the phantom-stock cancellation rate broken down by verdict type (Available / Low stock / Uncertain), so that I can measure the feature's impact. | P3 |
@@ -58,6 +58,13 @@ And a new "Check availability" tap is required before a verdict is shown again
 Given a shopper taps "Check availability" while a request is already in flight
 Then the second tap is ignored (debounced)
 And only one request is made to the backend
+
+# Uncertain verdict — CTA visible (incorporates former S7)
+Given the assistant returns an Uncertain verdict for the shopper's selected store
+Then the reservation CTA for that store remains visible and tappable
+And no error or blocking state is shown
+And the shopper may tap "Reserve" without requiring an alternative store selection
+(Note: the feature de-emphasises the original store by surfacing the alternative, but it must not prevent the reservation.)
 
 # NFR — latency
 The verdict must be returned in ≤ 5 seconds at p95 under normal load
@@ -217,9 +224,55 @@ Alerting must fire if degraded-mode rate across any store exceeds 10% of availab
 
 ---
 
+### S5 — Size/colour-specific verdict
+
+**Story:** As a click-&-collect shopper, I want the availability check to be specific to my selected size and colour, so that the verdict reflects exactly what I'm buying.
+
+```gherkin
+# Happy path — size and colour both selected
+Given a shopper has selected a specific size and a specific colour for a product with colour variants
+When the confidence model computes the verdict
+Then the phantom-stock rate signal is calculated at store / SKU / size level (not store / SKU level alone)
+And the resulting verdict reflects availability for that exact size and colour combination
+
+# Happy path — size-only product (no colour variants)
+Given a shopper has selected a size for a product that has no colour variants
+When the confidence model computes the verdict
+Then the verdict is computed at store / SKU / size level
+And no colour selection is required or prompted
+
+# Error path — size changed after verdict shown
+Given a shopper has received a verdict for size M
+When they change the selected size to L
+Then the existing verdict is cleared immediately
+And a new "Check availability" tap is required before a new verdict is shown
+And the UI does not retain or display the M verdict alongside the new size selection
+
+# Error path — colour changed after verdict shown
+Given a shopper has received a verdict for colour Black
+When they change the selected colour to White
+Then the existing verdict is cleared immediately
+And a new "Check availability" tap is required before a new verdict is shown
+
+# Edge case — new-season item with insufficient size-level history
+Given the target store / SKU / size has fewer than 30 days of phantom-stock history (e.g. new-season line)
+When the model computes the confidence score
+Then the model falls back to store / SKU-level phantom-stock rate
+And treats the missing size-level signal as unavailable (counts against the 2-of-5 minimum)
+And the shopper sees a verdict based on the remaining available signals (may result in Uncertain / degraded mode)
+
+# NFR — scoring granularity
+All confidence score computations must use size-level phantom-stock rate when available
+Store/SKU-level fallback is logged per computation for post-launch precision audit
+```
+
+---
+
 ## Adversarial pass — fresh session critique log
 
 57 issues identified. Patched in top 4 stories: issues 1–4, 5–6, 7–8, 13–14, 16, 23, 28, 33–36, 45–46, 52. Remaining open issues carried forward as known backlog debt.
+
+**Post-backlog-notes update (2026-07-29):** S7 removed as standalone story and merged into S1 (new AC: "Uncertain verdict — CTA visible"). Full Gherkin ACs added for S5.
 
 ### (A) Missing edge cases — patched
 - **1** Boundary at exactly 80% and 50% → defined: 80 = Available, 50 = Low stock

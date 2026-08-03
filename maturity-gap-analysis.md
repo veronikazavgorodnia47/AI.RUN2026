@@ -3,7 +3,7 @@
 **Date:** 2026-07-25
 **Author:** Veronika Zavgorodnia — UX/UI Designer
 **Project:** Omnichannel Commerce Platform
-**Committed location:** https://github.com/veronikazavgorodnia47/AI.RUN2026
+**Committed location:** [Repo path]
 
 ---
 
@@ -72,7 +72,7 @@
 **Date reviewed:** 2026-07-25
 
 | Review question | Reviewer answer |
-|---|---|
+| ---|---|
 | Is the evidence for each dimension specific and observable — not aspirational? | Yes, the evidence describes current state accurately with specific examples like "Just created first shared prompt template in Kata 2, but this is the exception rather than the norm." |
 | Which score do you challenge, and why? | I challenge the Reusability score - should be L1.5 or borderline L2 because you've already created and shared a prompt template in DIAL with peer review, which shows movement toward shared artifacts even if it's early stage. |
 | Is each root cause a structural/behavioural cause — not a symptom? | Yes, both root causes identify structural gaps (no designated repository, no established workflow, no structured approach) rather than just describing symptoms. |

@@ -71,6 +71,8 @@
 
 **What breaks the budget:** Kafka consumer group falling behind (consumer lag > 5,000 messages). SAP batch export job failing silently without a dead-letter alert. Redis eviction under memory pressure expiring keys before Kafka refresh arrives.
 
+**Redis sizing and eviction policy (added from adversarial pre-mortem S1-B3):** Redis ElastiCache cluster must be sized for the full active SKU working set across all 22 countries plus 30% headroom. Eviction policy must be set to `volatile-ttl` — evict only keys with a TTL, never bare inventory keys. A CloudWatch alarm on `evicted_keys > 0` must be active in staging before Black Friday load test. A team optimising for NFR-06 (cost) will under-provision Redis; sizing must be locked before the cost review, not after.
+
 **Owner:** Platform engineering; escalation path to SAP/integration team for batch export failures.
 
 ---

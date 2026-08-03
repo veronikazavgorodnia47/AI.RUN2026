@@ -71,6 +71,13 @@ nfrs:
     source_constraint: >
       SAP ECC batch export reality (assumption 1, 00-discovery-context.md).
       Click-and-collect AI assistant stale threshold = 30 min (K 3.D.6 spec).
+    redis_sizing:
+      eviction_policy: volatile-ttl
+      headroom_pct: 30
+      alarm: evicted_keys > 0 must alert in staging before Black Friday load test
+      note: >
+        Added from adversarial pre-mortem S1-B3. Size for full active SKU working set
+        across all 22 countries. Lock sizing before cost (NFR-06) review.
     adr_refs: [ADR-001]
     owner: platform-engineering
 

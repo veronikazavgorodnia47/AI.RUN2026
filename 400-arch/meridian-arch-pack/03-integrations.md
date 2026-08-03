@@ -152,3 +152,4 @@ Apollo returns errors in-band with HTTP 200.
 | OQ-1 | Does the POS client refresh Auth0 tokens silently, or does a clerk re-login interrupt the flow? | Auth0 / David Park |
 | OQ-2 | Is `storeId` sent in the QR barcode payload, or does POS inject it from device config? | POS engineering team |
 | OQ-3 | What is the agreed degraded-mode banner copy? | Sarah Chen (Head of CX) |
+| OQ-4 | What is the Auth0 tenant rate-limit for machine-to-machine token refresh at 1,400 simultaneous POS terminals? Standard tier is 2 req/s — this will be breached at store-open on Black Friday. Confirm tier upgrade or staggered refresh strategy before Phase 1 GA. | Auth0 / Platform engineering / David Park (sign-off) |

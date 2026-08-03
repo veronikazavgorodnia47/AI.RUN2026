@@ -13,7 +13,7 @@
 | 4 | Taps info icon | Disclosure tooltip expands | "Estimated from store data — not a guarantee." |
 | 5 | Taps "Request pickup" | Confirmation modal appears | "You're requesting pickup at Oak Street. This is not a guaranteed hold — item may sell before you arrive." + Confirm / Cancel |
 | 6 | Confirms request | Soft hold queued; confirmation screen shown | "Pickup requested at Oak Street. Bring your order number. Hold not guaranteed." |
-| 7 | Arrives at store; collects item | Post-pickup feedback prompt shown | "Was the item available when you arrived?  👍  👎" |
+| 7 | Arrives at store; collects item | Post-pickup feedback prompt shown | "Was the item available when you arrived?" + notification-done / content-clear [UUI Asset: confirmed ✅] |
 
 **Latency note (from Wide AI-AC3):**
 - 0 → 1.5s: skeleton holds — no estimate shown yet, no message

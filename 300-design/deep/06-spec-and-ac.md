@@ -31,7 +31,7 @@
 
 ## SPEC — AvailabilityAssistantCard
 
-`AvailabilityAssistantCard` is a composed component (not a single UUI primitive). It is built from: `Panel` (confirm UUI name), `Badge`, `Text`, `IconButton`, `Button`, `Tooltip`, `Skeleton` (confirm UUI name). Do not invent component names — where unconfirmed, write `confirm against UUI`.
+`AvailabilityAssistantCard` is a composed component (not a single UUI primitive). It is built from: a styled **Frame** (no standalone `Panel` component exists in UUI — use Frame with card styling ✅), `Badge` ✅, `Text` ✅, `Icon Button` ✅, `Button` ✅, `Tooltip`, `Skeleton/Text Block` ✅. All component names verified against UUI library.
 
 ### Props
 
@@ -44,7 +44,7 @@
 | `isLoading` | `boolean` | True while the availability request is pending |
 | `hasError` | `boolean` | True when the feed is unavailable or the model cannot produce a safe response |
 | `onRequestPickup` | `() => void` | Called when user confirms pickup request |
-| `onFeedback` | `(positive: boolean) => void` | Called when user taps thumbs-up or thumbs-down |
+| `onFeedback` | `(positive: boolean) => void` | Called when user taps positive (✓) or negative (✗) feedback |
 
 ### State model
 
@@ -72,33 +72,36 @@ State priority when multiple conditions are true: `error` > `stale` > `low-confi
 
 **`loading`**
 ```
-Panel [UUI: Panel — confirm name]
+Frame [styled card — no UUI Panel component]
   Text "Checking availability…"  [UUI: Text, neutral-500]
-  Skeleton × 4                   [UUI: Skeleton — confirm name]
+  Skeleton/Text Block × 4        [UUI: Skeleton/Text Block ✅]
 ```
 
 **`fresh`**
 ```
 Panel
-  Row: Badge "Likely available" [color.amber-500]  +  IconButton ℹ → Tooltip "Estimated from store data — not a guarantee."
-  Text "[storeName] · [distance]  ›"      [UUI: Text + IconButton — store selector]
+  Row: Badge "Likely available" [color.amber-500]  +  Icon Button [UUI Asset: notification-info ✅] → Tooltip "Estimated from store data — not a guarantee."
+  Text "[storeName] · [distance]  ›"      [UUI: Text + Icon Button — store selector]
   Text "Stock data updated [X] min ago"   [UUI: Text caption, neutral-500]  ← always inline
   Divider
   Text "Prefer to call ahead?  [storePhone]"  [UUI: Text — recovery path, always visible]
   Button "Request pickup"  [primary]
-  Text "Was this helpful?  👍  👎"  [UUI: IconButton pair — feedback]
+  Text "Was this helpful?"  [UUI: Text caption, neutral-500]
+  Icon Button [UUI Asset: notification-done ✅]  aria-label="Helpful"
+  Icon Button [UUI Asset: content-clear ✅]  aria-label="Not helpful"
 ```
 
 **`low-confidence`**
 ```
 Panel
-  Row: Badge "Limited availability" [color.amber-700]  +  IconButton ℹ → Tooltip
+  Row: Badge "Limited availability" [color.amber-700]  +  Icon Button [UUI Asset: notification-info ✅] → Tooltip
   Text "[storeName] · [distance]  ›"
   Text "Stock data updated [X] min ago"   [caption, neutral-500]
   Divider
   Text "We'd recommend calling ahead before making the trip. [storePhone]"  [Medium weight — prominent]
   Button "Request pickup"  [secondary]
-  Text "Was this helpful?  👍  👎"
+  Text "Was this helpful?"  [UUI: Text caption]
+  Icon Button [UUI Asset: notification-done ✅]  /  Icon Button [UUI Asset: content-clear ✅]
 ```
 
 **`stale`**
@@ -160,9 +163,9 @@ Shown on post-pickup confirmation screen.
 
 **Trigger:** Post-pickup completion screen — after the shopper has been to the store. Requires a "pickup completed" event from the order system (not the request-confirmation screen). Confirm trigger with product.
 
-**Content:** "Was the item available when you arrived?  👍  👎"
+**Content:** Text "Was the item available when you arrived?" + Icon Button [UUI Asset: notification-done ✅] / Icon Button [UUI Asset: content-clear ✅]
 
-**On 👎:** Log `{ store_id, sku, confidence_score, sap_sync_age, timestamp }` — no PII.
+**On CloseOutline tap [UUI Asset: confirm name]:** Log `{ store_id, sku, confidence_score, sap_sync_age, timestamp }` — no PII.
 
 ---
 
@@ -198,14 +201,14 @@ THEN render error state with copy: "Something went wrong checking availability f
 WHEN state is `fresh` OR `low-confidence`,
 THEN display "Stock data updated [X] min ago" inline at all times — not in a tooltip only.
 Format rule: `[X]` = integer minutes rounded down; `< 60 min` → "X min ago"; `≥ 60 min` → "about X hours ago". If `sapSyncAge` is unavailable, omit the timestamp and show "Stock data freshness unknown."
-WHEN user taps info icon (`IconButton ℹ`),
+WHEN user taps the info icon (`Icon Button` [UUI Asset: notification-info ✅]),
 THEN show `Tooltip`: "Estimated from store data — not a guarantee."
 
 **AC5 — Feedback**
 WHEN the post-pickup completion screen is shown (pickup marked as collected),
-THEN render `FeedbackPrompt`: "Was the item available when you arrived? 👍 👎"
+THEN render `FeedbackPrompt`: Text "Was the item available when you arrived?" + notification-done / content-clear icon buttons [UUI Asset: confirmed ✅]
 *Trigger clarification: this fires AFTER the shopper has been to the store — NOT at request confirmation (Step 6). Requires a "pickup completed" event from the order/fulfilment system — confirm trigger with product before build.*
-WHEN user taps 👎,
+WHEN user taps the content-clear icon button [UUI Asset: content-clear ✅],
 THEN log `{ store_id, sku, confidence_score, sap_sync_age, timestamp }` — no PII fields.
 *Logging destination: confirm analytics endpoint with backend before build.*
 

@@ -4,7 +4,8 @@
 **Author:** Veronika Zavgorodnia — UX/UI Designer
 **Project:** Omnichannel Commerce Platform
 **Model:** Claude 4 Sonnet via DIAL
-**DIAL location:** https://chat.lab.epam.com/share/hP6HqMVcFSQ1f8zYrprFhJUe8XuK8omgx9j2L52kGJxiCbuNvDbwoBU2iqQGcRaJogK7W679K3PCYcN8funbecSonNbod3TwjBg58zY14Yh1R5ACCup9FrkXXNkUQahqpgqGRLj9wrEwJgd3Y7R8n8ZDs
+**DIAL location:** https://chat.lab.epam.com/share/hP6HqMVcFSQ1f8zYrprFhJUe8XuK8omgx9j2L52kGJxiCbuNvDbwoBU2iqQGcRaJogK7W679K3PCYcN8funbecSrKNxiiABT4JRk8MntMaPrs3GSLenstYWj5R7fk2ZgHozgHvgB
+Rvi2BQTYcRFnHC2Lo
 **Committed location:** https://github.com/veronikazavgorodnia47/AI.RUN2026
 
 ---

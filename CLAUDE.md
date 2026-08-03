@@ -1,0 +1,159 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What this repo is
+
+Veronika Zavgorodnia's learner project folder for the AI:RUN bootcamp (EPAM AI-Native SDLC program). Produces the artefact chain for **Case A: Meridian Retail Group** across modules. The curriculum itself lives in `curriculum-public-main/` (read-only — do not edit it). Module entry points are `modules/NNN-index.md`; canonical definitions are in `modules/000-glossary.md`.
+
+GitHub remote: `veronikazavgorodnia47/AI.RUN2026`. No local git repo — files are uploaded via the GitHub web UI. Hidden files (e.g. `.claude/`) require **Cmd + Shift + .** in Finder to reveal, or **Cmd + Shift + G** → paste the full path.
+
+## Reference case
+
+**Case A — Meridian Retail Group**: mid-market EU omnichannel fashion retail, Western Europe, €1–5B revenue, 22-country fragmented stack, GDPR + ESPR compliance pressure. Full snapshot in `001-reference-caseA.md`.
+
+## Artefact chain — Module 100 (Consulting & SME, Wide path) ✅ complete
+
+Root-level files. Each carries forward into the next; chain must stay on one reference case.
+
+| File | Kata | What it is |
+|---|---|---|
+| `00-playground.md` | K 1.W.1 | 5-line industry playground |
+| `01-context-brief.md` | K 1.W.2 | One-page market and trend scan; every claim named |
+| `02-primary-signal.md` | K 1.W.3 | Customer verbatims + competitor teardown |
+| `03-research-audit.md` | K 1.W.4 | Trust ledger: sourced / unverified / cut |
+| `04-use-cases.md` | K 1.W.5 | 10 use cases scored value × feasibility; top 3 |
+| `05-canvas.md` | K 1.W.6 | One-page opportunity canvas; critique log included |
+| `06-roi.md` | K 1.W.7 | Three-scenario ROI; assumptions sourced or flagged `[unverified]` |
+| `07-deck.md` | K 1.W.8 | 10-slide exec narrative (≤30 words/slide) |
+| `opportunity-brief.md` | K 1.3 | Canonical carry-forward artefact — 9-field one-page Markdown |
+
+`opportunity-brief.md` is the handoff point to PROD/BA.
+
+**Module 100 scoring convention:** value × feasibility (multiplication, not addition). Scores 1–25; both axes 1–5.
+
+**Module 100 research integrity:** tag every unverified claim; never build ROI or scoring on one without flagging it; every verbatim cites a named source and date; every feasibility score names the binding constraint.
+
+## Artefact chain — Module 200 (PROD/BA, Wide path) ✅ complete
+
+Files live in `200-pm-ba/`. Feature: AI availability assistant for Meridian click-&-collect (phantom-stock problem).
+
+| File | Kata | What it is |
+|---|---|---|
+| `00-feature.md` | K 2.W.1 | 5-line feature frame |
+| `01-vision.md` | K 2.W.2 | Vision + confidence thresholds + degraded-mode spec |
+| `02-personas-journey.md` | K 2.W.3 | Clara + Ben personas; Mermaid journey map; flagged `[unverified]` |
+| `03-competitors.md` | K 2.W.4 | IKEA / Zara / M&S teardown; differentiator statement |
+| `04-stories-acs.md` | K 2.W.5 | 10 stories; Gherkin ACs for S1–S5; AI Eval Card for S2 |
+| `05-backlog.csv` | K 2.W.6 | RICE-scored backlog (10 rows, sorted descending) |
+| `05-backlog-notes.md` | K 2.W.6 | RICE assumptions; S7 scoring-artefact note; human override sequence |
+| `06-prd.md` | K 2.W.7 | One-page PRD + Decision Memory DM-200-001 |
+| `06-traceability.md` | K 2.W.7 | Story → outcome metric matrix; dependency chain |
+| `07-release-comms.md` | K 2.W.8 | Scope confirmation, risks, stakeholder messages, release notes |
+
+**Key Module 200 rules:**
+- Confidence scores are integers 0–100 (not 0–1 floats). State the scale explicitly in every AI Eval Card.
+- Every AC must be answerable yes/no. No vague adjectives ("fast", "accurate") as ACs.
+- Every story traces to one outcome metric; every metric links to at least one story.
+- Unverified claims tagged `[unverified]` before building stories or ROI on them.
+- Human-owned (never decide): scope, prioritisation cuts, ship-readiness, which AI capabilities to offer.
+
+**Module 200 delivery sequence** (human override; not RICE rank): S2 → S5 → S1 → S4 → S3 → S8 → deferred.
+
+## Artefact chain — Module 300 (Design, Wide path) ✅ complete
+
+Files live in `300-design/`. Feature: AI availability assistant for Meridian click-&-collect (phantom-stock problem). Veronika is a designer — Wide complete; Deep (K 3.D.1–9) is next, then one Final Kata (K 3.3) that draws on both.
+
+| File | Kata | What it is |
+|---|---|---|
+| `00-jtbd-feasibility.md` | K 3.W.1 | JTBD statement + two-branch AI feasibility gate |
+| `01-journey-map.md` | K 3.W.2 | Click-&-collect journey map with emotion + drop-off |
+| `01-heuristics.md` | K 3.W.2 | Nielsen heuristic review — 8 validated findings |
+| `02-workshop.md` | K 3.W.3 | Workshop plan: decision, HMWs, divergent ideas |
+| `03-synthesis.md` + `03-decision.md` | K 3.W.4 | Impact × effort scoring; one decided change |
+| `04-ai-ac.md` | K 3.W.5 | AI-aware acceptance criteria (6 clauses) |
+| `05-mockup.html` | K 3.W.6 | Lo-fi prototype: happy path, low confidence, fallback |
+| `06-context.md` + `06-spec.md` | K 3.W.7 | Agent-ready handoff pack (passes Definition of Handoff Done) |
+| `07-validation-plan.md` + `07-narrative.md` | K 3.W.8 | Validation plan + 1-pager narrative |
+
+## Artefact chain — Module 300 (Design, Deep path) 🔄 next
+
+Files live in `300-design/deep/`. K 3.D.1–9 specialist series, then Final Kata K 3.3.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `deep/01-feasibility-and-scope.md` | K 3.D.1 | AI feasibility + scope gate | ✅ complete |
+| `deep/02-synthesis-and-governance.md` | K 3.D.2 | Evidence synthesis + governance gate | ✅ complete |
+| `deep/03-prompt-rules.md` | K 3.D.3 | Project prompt rules | ✅ complete |
+| `deep/04-concept-and-audit.md` | K 3.D.4 | Audited behavioural concept | ✅ complete |
+| `deep/05-conversation-flow.md` | K 3.D.5 | Conversational happy/sad paths | ✅ complete |
+| `deep/06-spec-and-ac.md` | K 3.D.6 | AI-aware SPEC + AC | ✅ complete |
+| `deep/07-code-prototype/` | K 3.D.7 | Token-bound prototype evidence | ✅ complete |
+| `deep/08-trust-surface-and-risk-register.md` | K 3.D.8 | Trust surface + AI risk register | ✅ complete |
+| `deep/09-eval-and-feedback.md` | K 3.D.9 | Evaluation + feedback loop | ✅ complete |
+| `.claude/skills/design/SKILL.md` + `REFERENCE.md` | K 3.3 | Final Kata — Design role-agent (Deep specialist) | ✅ complete |
+
+**Figma working file (Module 300 Deep):** `Pgmk44mu6RFylVWwT8rcVg` — AI-RUN Veronika. K 3.D.4 concept sketch lives here: Section node `3:24`, states row `3:27`. URL: `https://www.figma.com/design/Pgmk44mu6RFylVWwT8rcVg/AI-RUN-Veronika`
+
+**Design system rules (apply from K 3.D onward):**
+- Do NOT use emoji in any design artefact (prototype, SPEC, flow, component tree). Use UUI Asset icons instead.
+- UUI Assets uses **lowercase-hyphenated** icon names (not PascalCase). Confirmed names: `notification-info` (info), `notification-done` (check/yes), `content-clear` (close/no/cancel).
+- UUI component names confirmed: `Badge`, `Button`, `Icon Button` (two words), `Skeleton/Text Block`. **No standalone `Panel` component** — use a styled Frame for card containers.
+- Feedback icons for binary yes/no: `notification-done` (✓) / `content-clear` (✗). Preferred over thumb metaphors for objective binary questions.
+- Both UUI libraries are connected to the Figma file (`Pgmk44mu6RFylVWwT8rcVg`): **UUI Assets** + **UUI Components** (team libraries, no setup needed).
+- All colour token hex values (amber-500, amber-700, neutral-600, neutral-500, neutral-200) are approximations — confirm against UUI library before build.
+
+**Open items before build (consolidated):** see `300-design/deep/07-code-prototype/parity-checklist.md` §7. O-1/O-2 resolved. Remaining launch blockers: EU AI Act sign-off (O-7); confidence threshold 0.70 validation against real SAP data (O-8).
+
+**Key Module 300 feasibility verdicts (from K 3.W.1):**
+- Branch 1 (AI in process): Conditional — third-party tools require anonymised inputs; CodeMie pre-approved.
+- Branch 2 (AI in product): Conditional — staleness warnings required; must NOT promise exact stock or guarantee holds; EU AI Act sign-off required before launch.
+
+**Drop-off step (from K 3.W.2):** Step 6 — item is missing at the counter after the shopper has already committed (reserved + travelled).
+
+**Workshop decision (from K 3.W.3):** Show inventory quantities with confidence indicators at all times vs. hide quantities and always show "Available for pickup — confirm at store". Decision-owner: Sarah Chen (Head of CX).
+
+## Kata reference images
+
+`Kata png /` (note: folder name has a trailing space) contains PNG rubric images for every kata. **Read the relevant image before starting any kata** — it shows the exact requirements and scoring criteria.
+
+Naming: `Kata N.w.M.png` for Wide (e.g. `Kata 3.w.5.png`), `Kata N.d.M.png` for Deep (e.g. `Kata 3.d.6.png`). Final kata images: `Kata 1.w.Final.png`, `Kata 2.w.Final.png`. Images exist up to K 3.D.6 — no PNG yet for K 3.D.7 onward or K 3.3.
+
+## Artefact chain — Module 400 (Architecture, Wide path) ✅ complete
+
+Files live in `400-arch/meridian-arch-pack/`. Output: **Meridian Architecture Pack**.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `meridian-arch-pack/00-discovery-context.md` | K 4.W.1 | 4-layer context (business/product/engineering/regulatory) + 5 implicit assumptions | ✅ complete |
+| `meridian-arch-pack/00-options.md` | K 4.W.2 | 3 divergent options for inventory/cart-bridge decision (sync SAP / event-driven cache / buy OMS) | ✅ complete |
+| `meridian-arch-pack/01-context.mmd` | K 4.W.3 | C4 L1 context diagram (Mermaid) | ✅ complete |
+| `meridian-arch-pack/02-containers.mmd` | K 4.W.3 | C4 L2 containers diagram (Mermaid) | ✅ complete |
+| `meridian-arch-pack/03-flow-instore-cart.mmd` | K 4.W.4 | Sequence diagram: store associate cart-bridge flow with p95 latency | ✅ complete |
+| `meridian-arch-pack/03-deps.mmd` | K 4.W.4 | Dependency graph: POS Client transitive dependencies | ✅ complete |
+| `meridian-arch-pack/03-integrations.md` | K 4.W.4 | Integration contract skeleton: POS → Apollo Gateway cart-lookup | ✅ complete |
+| `meridian-arch-pack/04-adr-001.md` – `04-adr-004.md` | K 4.W.5 | 4 ADRs with Agent-Readable Summary ("do not" clause each); ADR-004 forced by pre-mortem | ✅ complete |
+| `meridian-arch-pack/05-patterns.md` | K 4.W.6 | Placed pattern catalog (Strangler Fig, Outbox, Bulkhead, Circuit Breaker, BFF) | ✅ complete |
+| `meridian-arch-pack/06-nfrs.md` + `06-nfrs.yaml` | K 4.W.7 | 7 NFR budgets (latency/cost/quality/reliability/security) | ✅ complete |
+| `meridian-arch-pack/07-adversarial.md` | K 4.W.8 | Pre-mortem: 3 stressors × 3 breaks; 4 accepted risks; 5 patched findings | ✅ complete |
+| `.claude/skills/architecture/SKILL.md` + `REFERENCE.md` | K 4.3 | Architecture role-agent (Final Kata) | ✅ complete |
+
+**Mermaid diagrams:** paste `.mmd` files into [mermaid.live](https://mermaid.live) to render. Em dashes (`—`) must be replaced with `-` — Mermaid's lexer rejects them.
+
+## Skills (role-agents)
+
+| Path | Covers | Invocation |
+|---|---|---|
+| `.claude/skills/consulting-sme/SKILL.md` | Module 100: `00–03` → `04–06` + `opportunity-brief.md` | `/consulting-sme` |
+| `.claude/skills/pm-ba/SKILL.md` | Module 200: personas/notes → stories + ACs + PRD + traceability | `/pm-ba` |
+| `.claude/skills/design/SKILL.md` | Module 300 Deep: design role-agent for Meridian click-&-collect | `/design-meridian` |
+| `.claude/skills/architecture/SKILL.md` | Module 400: arch pack — C4, ADRs, patterns, NFRs, pre-mortem | `/architecture-meridian` |
+
+No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
+
+## Other files at root
+
+- `maturity-gap-analysis.md` — AI maturity assessment
+- `model-selection-note.md` — model selection rationale
+- `prompt-template-user-journey-phase.md` / `prompt-user-journey-phase.md` — reusable prompt templates
+- `onboarding.md` — onboarding artefact (Module 010)
