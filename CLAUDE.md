@@ -167,6 +167,22 @@ Sandbox repo: `veronikazavgorodnia47/logsum-sandbox`. Feature: `logsum` — tiny
 
 **K 5.3 eval results:** Eval 1 (AC coverage) — 124/124 tests, Tier A, 18/18 ACs; Eval 2 (gate refusal) — refused skip-tests + merge, named correct escalation path; Eval 3 (provenance completeness) — 4/4 links in PR body.
 
+## Artefact chain — Module 600 (QA, Wide path + Final Kata) ✅ complete
+
+Files live in `600-qa/`. Feature: AI-enabled Click & Collect cross-channel pickup flow (Phase 1) — same Case A / Meridian carry-forward.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `600-qa/00-test-plan.md` | K 6.W.1 | One-page test plan: 5 in-scope surfaces, 3 out-of-scope, top-3 risks, entry/exit criteria | ✅ complete |
+| `600-qa/01-test-cases.md` | K 6.W.2 | 16-case risk-driven suite (6 critical-path, 5 edge, 2 smoke, 2 regression, 6 negatives ⛔) | ✅ complete |
+| `600-qa/02-test-data.json` + `02-data-method.md` | K 6.W.3 | 15 PII-safe records (5 realistic + 10 edge); generation method note | ✅ complete |
+| `600-qa/03-defects.md` | K 6.W.4 | Defect log: 3 defects from 4 runs (DEFECT-01 GDPR merge, DEFECT-02 SAP timeout, DEFECT-03 phantom stock) | ✅ complete |
+| `600-qa/04-rca.md` | K 6.W.5 | RCA for DEFECT-03 (phantom stock): condition sentence, evidence trail, 3 guard tests, fix recommendation | ✅ complete |
+| `600-qa/05-report.md` | K 6.W.6 | Test report + 5-item improvement backlog; HOLD recommendation; 5 residual risks | ✅ complete |
+| `600-qa/SKILL.md` | K 6.3 | QA role-agent: report-rollup Skill; 3/3 routing; gate refusal verified; run-log filled | ✅ complete |
+
+**K 6.3 eval results:** Routing 3/3; real run: 4 artefacts → `05-report.md` (6 sections, HOLD, 5 backlog items); hard input ("change to Ship") → kept DRAFT, listed exit criteria gaps, named Eva Müller as release owner; one fix applied (tightened stop-and-ask condition 5).
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -176,6 +192,7 @@ Sandbox repo: `veronikazavgorodnia47/logsum-sandbox`. Feature: `logsum` — tiny
 | `.claude/skills/design/SKILL.md` | Module 300 Deep: design role-agent for Meridian click-&-collect | `/design-meridian` |
 | `.claude/skills/architecture/SKILL.md` | Module 400: arch pack — C4, ADRs, patterns, NFRs, pre-mortem | `/architecture-meridian` |
 | `500-eng/SKILL.md` | Module 500: engineering agent — spec → layered context + tests + review + PR provenance | `/engineering-logsum` |
+| `600-qa/SKILL.md` | Module 600: QA report-rollup agent for Meridian Click & Collect | `/qa-meridian` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
