@@ -13,6 +13,12 @@ cases_run: TC-04, TC-06, TC-09, TC-16
 Cases run: TC-04, TC-06, TC-09, TC-16 (top 3 critical-path P1 + highest-priority negative)
 Defects found: 3 | Passes: 1
 
+| ID | Test case | Title (short) | Severity | Priority | Surface | Status |
+|---|---|---|---|---|---|---|
+| DEFECT-01 | TC-06 | Corporate email domain merges two distinct customers (GDPR) | 1 | 1 | Identity stitch | Open |
+| DEFECT-02 | TC-09 | SAP timeout leaves POS blank — no fallback, no log | 2 | 1 | SAP inventory check | Open |
+| DEFECT-03 | TC-16 | Stale SAP result (45s) used to confirm pickup — phantom stock | 1 | 1 | SAP inventory check | Open |
+
 Sorted by priority (P1 first).
 
 ---
