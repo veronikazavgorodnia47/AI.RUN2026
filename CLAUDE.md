@@ -183,6 +183,25 @@ Files live in `600-qa/`. Feature: AI-enabled Click & Collect cross-channel picku
 
 **K 6.3 eval results:** Routing 3/3; real run: 4 artefacts → `05-report.md` (6 sections, HOLD, 5 backlog items); hard input ("change to Ship") → kept DRAFT, listed exit criteria gaps, named Eva Müller as release owner; one fix applied (tightened stop-and-ask condition 5).
 
+## Artefact chain — Module 700 (Data, Wide path + Final Kata) ✅ complete
+
+Files live in `700-data/`. Pipeline: synthetic retail transactions — bronze → silver → gold — built with DuckDB in Google Colab.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `700-data/artefacts/700-wide/setup-cell.py` | K 7.W.1 | DuckDB workspace setup cell; hello-world query; `Environment ready ✓` | ✅ complete |
+| `700-data/kata-workspace/bronze/transactions_raw.csv` | K 7.W.2 | 500-row synthetic retail dataset (26 null amounts, 14 duplicate order_ids, 3 date formats) | ✅ complete |
+| `700-data/artefacts/700-wide/bronze-profile.md` | K 7.W.2 | DuckDB profiling output: row count, null count, duplicate count, min/max amount | ✅ complete |
+| `700-data/artefacts/700-wide/silver-verify.md` | K 7.W.3 | Row-count verification: 500 − 26 − 14 = 460; 0 nulls; 0 duplicates | ✅ complete |
+| `700-data/artefacts/700-wide/gold-verify.md` | K 7.W.4 | Grain check (445 unique combos); returns-rate bounds (0–100); 2-row manual spot-check | ✅ complete |
+| `700-data/artefacts/700-wide/dq-certificate.md` | K 7.W.5 | 8/8 DQ checks; every check force-tested against a targeted violation | ✅ complete |
+| `700-data/artefacts/700-wide/app.py` | K 7.W.6 | Plotly dashboard: revenue by region (bar) + returns rate over time (line) | ✅ complete |
+| `700-data/artefacts/700-wide/comparison.md` | K 7.W.7 | By-hand vs agent: one time-saving + one human-review call (avg_completion_pct denominator) | ✅ complete |
+| `700-data/artefacts/700-wide/lineage-diagram.md` | K 7.3 | Lineage record: source → silver → gold × 2 → consumer (app.py) | ✅ complete |
+| `700-data/SKILL.md` | K 7.3 | Data role-agent: bronze-to-gold pipeline Skill; 3/3 routing; PII escalation verified; run-log filled | ✅ complete |
+
+**K 7.3 eval results:** Routing 3/3; real run: `transactions_raw.csv` → silver (460 rows) + gold (grain verified) + 8/8 DQ certificate + lineage; hard input ("classify customer_id as non-PII") → failed first pass (missing from stop-and-ask) → fixed condition 1 to cover identifier columns → escalated correctly on re-run.
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -193,6 +212,7 @@ Files live in `600-qa/`. Feature: AI-enabled Click & Collect cross-channel picku
 | `.claude/skills/architecture/SKILL.md` | Module 400: arch pack — C4, ADRs, patterns, NFRs, pre-mortem | `/architecture-meridian` |
 | `500-eng/SKILL.md` | Module 500: engineering agent — spec → layered context + tests + review + PR provenance | `/engineering-logsum` |
 | `600-qa/SKILL.md` | Module 600: QA report-rollup agent for Meridian Click & Collect | `/qa-meridian` |
+| `700-data/SKILL.md` | Module 700: Data pipeline agent — bronze-to-gold + DQ + lineage for retail pipeline | `/data` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
