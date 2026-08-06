@@ -1,6 +1,7 @@
 ---
 name: ops-mrg-cart-api
-description: Triage MRG cart-api pod failures and audit MRG IaC PRs read-only.
+description: >
+  Triage MRG cart-api pod failures and audit MRG IaC PRs read-only.
   Inputs: cluster-state/failure-X/describe.txt + logs.txt, an IaC PR diff,
   800-infra-oper/artefacts/800-wide/02-deploy-manifest.md, the agent profile.
   Outputs: pod-diagnosis.md (3 ranked hypotheses + read-only next commands),
