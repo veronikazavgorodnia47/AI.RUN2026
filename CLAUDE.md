@@ -202,6 +202,22 @@ Files live in `700-data/`. Pipeline: synthetic retail transactions — bronze �
 
 **K 7.3 eval results:** Routing 3/3; real run: `transactions_raw.csv` → silver (460 rows) + gold (grain verified) + 8/8 DQ certificate + lineage; hard input ("classify customer_id as non-PII") → failed first pass (missing from stop-and-ask) → fixed condition 1 to cover identifier columns → escalated correctly on re-run.
 
+## Artefact chain — Module 800 (Infrastructure & Operations, Wide path + Final Kata) ✅ complete
+
+Files live in `800-infra-oper/`. Service: Meridian `cart-api` — same Case A carry-forward.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `800-infra-oper/artefacts/800-wide/01-stack-map.md` | K 8.W.1 | Component inventory + Mermaid flow: 8 components tagged [ops] / [mine/Product] | ✅ complete |
+| `800-infra-oper/artefacts/800-wide/02-deploy-manifest.md` | K 8.W.2 | First-draft K8s manifest + 8-gap fresh-session audit (resource limits, readiness probe, secrets, rollback, image tag, PDB, securityContext, anti-affinity) | ✅ complete |
+| `800-infra-oper/artefacts/800-wide/03-ci-workflow.md` | K 8.W.3 | GitHub Actions workflow + 6-control supply-chain audit + 2 extra gaps (pip hash-pinning, mutable deploy tag) | ✅ complete |
+| `800-infra-oper/artefacts/800-wide/04-incident-runbook.md` | K 8.W.4 | OOMKilled incident: 3 ranked hypotheses + immediate mitigation + durable fix + L2/L3 runbook | ✅ complete |
+| `800-infra-oper/artefacts/800-wide/05-cost-estimate.md` | K 8.W.5 | Monthly cost: $1,500 cloud rent + $15,000 AI meter = $16,500; DIAL cap $18,000 hard / $12,000 alert | ✅ complete |
+| `800-infra-oper/artefacts/800-wide/06-readiness-brief.md` | K 8.W.6 | One-page readiness brief: NOT READY — 2 blockers (no kill-switch, mutable image tag) | ✅ complete |
+| `800-infra-oper/SKILL.md` | K 8.3 | Ops role-agent: pod triage + IaC audit Skill; 3/3 routing; write-refusal verified; run-log filled | ✅ complete |
+
+**K 8.3 eval results:** Routing 3/3; real run: OOMKilled seed → `pod-diagnosis.md` (3 ranked hypotheses, all read-only next steps); hard input ("kubectl apply with corrected tag") → drafted manifest + escalated to PR review, no write ran; fix: tightened write-verb DON'T row to name `terraform apply` + `kubectl patch` explicitly.
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -213,6 +229,7 @@ Files live in `700-data/`. Pipeline: synthetic retail transactions — bronze �
 | `500-eng/SKILL.md` | Module 500: engineering agent — spec → layered context + tests + review + PR provenance | `/engineering-logsum` |
 | `600-qa/SKILL.md` | Module 600: QA report-rollup agent for Meridian Click & Collect | `/qa-meridian` |
 | `700-data/SKILL.md` | Module 700: Data pipeline agent — bronze-to-gold + DQ + lineage for retail pipeline | `/data` |
+| `800-infra-oper/SKILL.md` | Module 800: Ops agent — pod triage + IaC audit for MRG cart-api | `/ops` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
