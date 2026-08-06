@@ -1,0 +1,18 @@
+2026-08-05T14:52:00Z INFO  cart-api starting on :8080
+2026-08-05T14:52:01Z INFO  postgres connected at postgres:5432
+2026-08-05T14:52:01Z INFO  redis connected at redis:6379
+2026-08-05T14:52:01Z INFO  DIAL gateway configured: https://dial.meridian.internal
+2026-08-05T14:52:02Z INFO  server ready
+2026-08-05T14:52:15Z INFO  POST /cart/summarise uid=usr_001 items=47 tokens_in=1247
+2026-08-05T14:52:16Z INFO  POST /cart/summarise uid=usr_002 items=23 tokens_in=1195
+2026-08-05T14:52:18Z INFO  POST /cart/summarise uid=usr_019 items=35 tokens_in=1302
+2026-08-05T14:52:22Z INFO  POST /cart/summarise uid=usr_083 items=61 tokens_in=1389
+2026-08-05T14:52:25Z INFO  POST /cart/summarise uid=usr_140 items=12 tokens_in=1184
+2026-08-05T14:52:28Z INFO  POST /cart/summarise uid=usr_205 items=54 tokens_in=1421
+2026-08-05T14:52:31Z INFO  POST /cart/summarise uid=usr_262 items=78 tokens_in=1498
+2026-08-05T14:52:34Z INFO  POST /cart/summarise uid=usr_301 items=44 tokens_in=1367
+2026-08-05T14:52:38Z INFO  POST /cart/summarise uid=usr_341 items=89 tokens_in=1512
+2026-08-05T14:52:39Z WARN  heap growing: 402MB in use
+2026-08-05T14:52:41Z WARN  heap growing: 501MB in use
+2026-08-05T14:52:44Z WARN  heap growing: 547MB in use
+2026-08-05T14:52:46Z FATAL signal: killed

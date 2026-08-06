@@ -1,0 +1,50 @@
+Name:             cart-api-7d9b6b7c9-xk2p8
+Namespace:        meridian
+Priority:         0
+Node:             node-pool-1-a1b2c3/10.100.0.5
+Start Time:       Wed, 05 Aug 2026 14:32:11 +0000
+Labels:           app=cart-api
+                  pod-template-hash=7d9b6b7c9
+Status:           Running
+IP:               10.96.5.47
+
+Containers:
+  cart-api:
+    Image:         registry.meridian.internal/cart-api:latest
+    Port:          8080/TCP
+    Host Port:     0/TCP
+    State:         Waiting
+      Reason:      CrashLoopBackOff
+    Last State:    Terminated
+      Reason:      OOMKilled
+      Exit Code:   137
+      Started:     Wed, 05 Aug 2026 14:52:03 +0000
+      Finished:    Wed, 05 Aug 2026 14:52:47 +0000
+    Ready:         False
+    Restart Count: 4
+    Limits:        <none>
+    Requests:      <none>
+    Liveness:      http-get http://:8080/healthz delay=10s timeout=1s period=15s #success=1 #failure=3
+    Readiness:     <none>
+    Environment:
+      DATABASE_URL:  postgres://user:password@postgres:5432/meridian
+      DIAL_API_KEY:  sk-dial-abc123secretkey
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-pqrst (ro)
+
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             False
+  ContainersReady   False
+  PodScheduled      True
+
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  22m                  default-scheduler  Successfully assigned meridian/cart-api-7d9b6b7c9-xk2p8 to node-pool-1-a1b2c3
+  Normal   Pulled     22m                  kubelet            Container image "registry.meridian.internal/cart-api:latest" already present on machine
+  Normal   Created    22m                  kubelet            Created container cart-api
+  Normal   Started    22m                  kubelet            Started container cart-api
+  Warning  OOMKilled  2m (x4 over 20m)    kubelet            Container cart-api in pod cart-api-7d9b6b7c9-xk2p8 was OOM killed
+  Warning  BackOff    1m (x8 over 19m)    kubelet            Back-off restarting failed container cart-api

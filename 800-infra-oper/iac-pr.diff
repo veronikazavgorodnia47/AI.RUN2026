@@ -1,0 +1,52 @@
+diff --git a/deploy/cart-api.yaml b/deploy/cart-api.yaml
+index abc1234..def5678 100644
+--- a/deploy/cart-api.yaml
++++ b/deploy/cart-api.yaml
+@@ -18,6 +18,11 @@ spec:
+   replicas: 3
+   selector:
+     matchLabels:
+       app: cart-api
++  strategy:
++    type: RollingUpdate
++    maxUnavailable: 0
++    maxSurge: 1
+   template:
+     metadata:
+       labels:
+         app: cart-api
+@@ -28,8 +33,30 @@ spec:
+         containers:
+           - name: cart-api
+-            image: registry.meridian.internal/cart-api:latest
++            image: registry.meridian.internal/cart-api@sha256:REPLACE_WITH_DIGEST_FROM_CI
+             ports:
+               - containerPort: 8080
++          resources:
++            requests:
++              memory: "256Mi"
++              cpu: "250m"
++            limits:
++              memory: "512Mi"
++              cpu: "500m"
++          readinessProbe:
++            httpGet:
++              path: /healthz
++              port: 8080
++            initialDelaySeconds: 5
++            periodSeconds: 10
++          securityContext:
++            runAsNonRoot: true
++            runAsUser: 1000
++            readOnlyRootFilesystem: true
+             env:
+               - name: DATABASE_URL
+                 value: "postgres://user:password@postgres:5432/meridian"
+               - name: DIAL_API_KEY
+                 value: "sk-dial-abc123secretkey"
+             livenessProbe:
+               httpGet:
+                 path: /healthz
+                 port: 8080
+               initialDelaySeconds: 10
+               periodSeconds: 15
