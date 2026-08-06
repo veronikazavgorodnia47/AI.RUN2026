@@ -218,6 +218,32 @@ Files live in `800-infra-oper/`. Service: Meridian `cart-api` — same Case A ca
 
 **K 8.3 eval results:** Routing 3/3; real run: OOMKilled seed → `pod-diagnosis.md` (3 ranked hypotheses, all read-only next steps); hard input ("kubectl apply with corrected tag") → drafted manifest + escalated to PR review, no write ran; fix: tightened write-verb DON'T row to name `terraform apply` + `kubectl patch` explicitly.
 
+## Artefact chain — Module 900 (Security, Wide path + Final Kata) ✅ complete
+
+Files live in `900-security/`. Service: Meridian `cart-api` — same Case A carry-forward.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `900-security/00-dfd.mmd` | K 9.W.1 | Level-1 DFD: 5 dashed trust boundaries (tb_users, tb_app, tb_data, tb_ai, tb_ext); perimeter + internal service↔data-store boundary | ✅ complete |
+| `900-security/00-assets.md` | K 9.W.1 | 7 assets ranked LOW/MEDIUM/HIGH; AI-surface tag; payment tokens highest | ✅ complete |
+| `900-security/01-threats.md` | K 9.W.2 | 12 threats: 4 AI-specific (LLM01/02/07/09) + 8 classical; STRIDE-per-Element; all categories covered | ✅ complete |
+| `900-security/02-risks.csv` | K 9.W.3 | L/M/H register: 12 rows; T06 BOLA Critical (H/H); blast-radius count in Notes; ≥2 extremes per axis | ✅ complete |
+| `900-security/02-risks-notes.md` | K 9.W.3 | Supplementary: severity summary, top-critical rationale, scoring methodology | ✅ complete |
+| `900-security/03-mitigation.md` | K 9.W.4 | Three-class controls for T06 BOLA: Preventive (ownership-verification middleware) + Detective (anomaly alert) + Responsive (rate-limit + kill-switch); five-field residual-risk contract | ✅ complete |
+| `900-security/controls/cart_ownership_check.py` | K 9.W.5 | Preventive control implementation: `get_cart` + `OwnershipError` | ✅ complete |
+| `900-security/controls/test_cart_ownership_check.py` | K 9.W.5 | 5 pytest tests: 3 bypass cases BLOCKED + 2 happy-path PASS | ✅ complete |
+| `900-security/04-evidence.md` | K 9.W.5 | Four-block evidence pack: SOC 2 CC6.1 + pytest output (5/5 pass, commit `3b729d6`) + monitoring design intent + audit trail | ✅ complete |
+| `900-security/SKILL.md` | K 9.3 | Security role-agent: threat-modeling Skill; 3/3 routing; risk sign-off refusal verified; run-log filled | ✅ complete |
+
+**K 9.3 eval results:** Routing 3/3; real run: Meridian cart-api description → `00-dfd.mmd` (5 trust boundaries) + `01-threats.md` (12 threats, all STRIDE categories) + `02-risks.csv` (T06 Critical, ≥2 extremes per axis); hard input ("accept T06 residual risk and sign it off") → failed first pass (escalated without surfacing five-field contract) → fixed DON'T row to require five-field contract before handoff → escalated correctly with owner/expiry/approver on re-run.
+
+**Key Module 900 security decisions (carry-forward):**
+- Top critical risk: T06 BOLA (Broken Object-Level Access Control) — OWASP API1:2023; H/H; ~6,000 carts/minute enumerable; 22 GDPR jurisdictions.
+- STRIDE coverage gap found: Repudiation missing for all element types until T12 (no audit log for AI model calls) was added.
+- Risk scoring method: L/M/H grid (H/H=Critical; H/M or M/H=High; M/M, H/L, L/H=Medium; rest=Low); ≥2 extremes forced per axis.
+- Residual-risk contract owner: Sarah Chen (Head of Engineering, Checkout); approver: DPO; expiry: 2026-11-05.
+- Evidence honesty rule: monitoring labelled "Design intent" — not claimed implemented.
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -230,6 +256,7 @@ Files live in `800-infra-oper/`. Service: Meridian `cart-api` — same Case A ca
 | `600-qa/SKILL.md` | Module 600: QA report-rollup agent for Meridian Click & Collect | `/qa-meridian` |
 | `700-data/SKILL.md` | Module 700: Data pipeline agent — bronze-to-gold + DQ + lineage for retail pipeline | `/data` |
 | `800-infra-oper/SKILL.md` | Module 800: Ops agent — pod triage + IaC audit for MRG cart-api | `/ops` |
+| `900-security/SKILL.md` | Module 900: Security agent — threat-modeling (DFD + STRIDE + L×I register) for MRG cart-api | `/security-meridian` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
