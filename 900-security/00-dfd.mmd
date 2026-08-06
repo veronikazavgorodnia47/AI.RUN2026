@@ -1,0 +1,61 @@
+flowchart LR
+  shopper(["Shopper (browser / mobile)"])
+  pos(["Store Associate (POS)"])
+
+  subgraph tb_users ["Trust boundary 1 — User ↔ Application (perimeter)"]
+    shopper
+    pos
+  end
+
+  gw["Apollo GraphQL Gateway"]
+  cart["Cart Service (cart-api)"]
+
+  subgraph tb_app ["Trust boundary 2 — Application services (internal)"]
+    gw
+    cart
+  end
+
+  orderdb[("Orders DB (PostgreSQL)")]
+  redis[("Inventory Cache (Redis)")]
+
+  subgraph tb_data ["Trust boundary 3 — Data stores (internal: service ↔ data store)"]
+    orderdb
+    redis
+  end
+
+  dial["DIAL Gateway (EPAM)"]
+  llm["LLM (Claude claude-sonnet-4-6)"]
+
+  subgraph tb_ai ["Trust boundary 4 — AI provider (external)"]
+    dial
+    llm
+  end
+
+  stripe["Stripe — Payment API"]
+  sap["SAP ECC — Inventory (on-prem)"]
+
+  subgraph tb_ext ["Trust boundary 5 — Third-party services (external)"]
+    stripe
+    sap
+  end
+
+  shopper -->|"request (untrusted)"| gw
+  pos -->|"request (untrusted)"| gw
+  gw -->|"validated REST call"| cart
+  cart -->|"read / write orders"| orderdb
+  cart -->|"read stock snapshot"| redis
+  sap -->|"StockUpdated events (Kafka)"| redis
+
+  cart -->|"cart contents as prompt (PII leaves boundary)"| dial
+  dial -->|"metered model call"| llm
+  llm -->|"summary text response"| dial
+  dial -->|"summary text"| cart
+
+  cart -->|"charge / refund (leaves boundary)"| stripe
+  stripe -->|"payment webhook"| cart
+
+  style tb_users stroke-dasharray:5 5
+  style tb_app  stroke-dasharray:5 5
+  style tb_data stroke-dasharray:5 5
+  style tb_ai   stroke-dasharray:5 5
+  style tb_ext  stroke-dasharray:5 5
