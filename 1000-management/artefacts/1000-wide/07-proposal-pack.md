@@ -39,7 +39,7 @@ Limited Risk to High Risk (Annex III) — realistic timeline impact 12–20 week
 occurs. Mitigation: preliminary Annex III / Article 6 analysis completed before this
 oral presentation; finding shared with MRG DPO at M0 contract sign.
 
-**Total one-time: €2,845,250 | Annual run: €180,000 | Payback (base case): ~6 months**
+**Total one-time: €2,845,250 | Annual run: €180,000 | Payback (base case): ~6 months (sourced M100 `06-roi.md`)**
 
 ---
 
@@ -117,7 +117,12 @@ full build (€2,765,250) locked at Phase 1 go/no-go.
 
 Milestones: M0 contract (2026-10-10) → M1 spike complete (2026-11-07) → M2 go/no-go
 (2026-11-10) → M3 integration complete (2027-03-10) → M4 predictor UAT (2027-07-10)
-→ M5 pilot stable (2027-08-01) → M6 full go-live (2027-08-10).
+→ M5 pilot stable (2027-10-25) → M6 full go-live (2027-11-10).
+
+*Timeline reconciliation: Phase 4 (Hardening & Go-Live) is a 4-month phase per the
+estimate (31 FTE-months, months 8–12 from go/no-go). Phase 4 start = 2027-07-10; Phase 4
+end = 2027-11-10. Prior artefacts 05-plan.md and 05-timeline.md carry stale dates
+(M5 2027-08-01, M6 2027-08-10) that compress Phase 4 to 1 month — see OI-06.*
 
 Governance: monthly steering committee (Head of Omnichannel as executive sponsor with
 written unblock authority), biweekly sprint review, biweekly retro (≥1 version-controlled
@@ -156,3 +161,4 @@ Items unresolved going into bid defence. Each must be closed before full-build c
 | OI-03 | EU AI Act preliminary Annex III / Article 6 analysis — to be completed and shared with MRG DPO before oral presentation (2026-10-03). If DPO reclassifies scorer as High Risk, Phase 3 scope and timeline are renegotiated before full-build contract is signed. | Delivery Lead + DPO | Before oral presentation (2026-10-03) |
 | OI-04 | Named EU retail / omnichannel reference (required by C3, weight 20) — reference customer name, contact, scope, and outcome to be provided before proposal submission. Without a named reference this criterion scores below competitors who supply one. | Delivery Lead | Proposal submission (2026-09-19) |
 | OI-05 | DPA 4-country tail costing — Bird & Bird late-completion retainer for the ≤4 unsigned-DPA countries is a named line item in `04-estimate.md` but the per-country rate has not been confirmed with Bird & Bird. Confirm before proposal submission. | Delivery Lead + Bird & Bird | Proposal submission (2026-09-19) |
+| OI-06 | **Milestone date drift in prior artefacts** — `05-plan.md` and `05-timeline.md` show Phase 4 ending August 2027 (M5 2027-08-01, M6 2027-08-10) but Phase 4 is a 4-month phase (months 8–12 from go/no-go, 2027-07-10 → 2027-11-10 per `04-estimate.md`). Both artefacts must be corrected before bid submission; the Gantt chart in `05-timeline.md` must also be re-rendered. Corrected dates: M5 pilot stable 2027-10-25, M6 full go-live 2027-11-10. | Delivery Lead | Proposal submission (2026-09-19) |
