@@ -244,6 +244,34 @@ Files live in `900-security/`. Service: Meridian `cart-api` — same Case A carr
 - Residual-risk contract owner: Sarah Chen (Head of Engineering, Checkout); approver: DPO; expiry: 2026-11-05.
 - Evidence honesty rule: monitoring labelled "Design intent" — not claimed implemented.
 
+## Artefact chain — Module 1000 (Delivery & PM, Wide path + Final Kata) ✅ complete
+
+Files live in `1000-management/artefacts/1000-wide/`. Service: Meridian ATP unified availability system — same Case A carry-forward.
+
+| File | Kata | What it is | Status |
+|---|---|---|---|
+| `1000-management/artefacts/1000-wide/00-rfp.md` | K 10.W.1 | Procurement-grade RFP: 6 evaluation criteria (weights sum to 100); pre-bid scoring worksheet | ✅ complete |
+| `1000-management/artefacts/1000-wide/01-qualification.md` | K 10.W.2 | Bid-qualification memo: 4 fit scores, 3 win themes, deal-breaker, top-3 risks, 2-row competitive context from buyer's perspective; recommendation: bid-with-conditions | ✅ complete |
+| `1000-management/artefacts/1000-wide/02-solution.md` | K 10.W.3 | Solution outline: 4 phases with entry/exit criteria; outsourced Bird & Bird GDPR legal review; Turn-key compliance; 4 bounded assumptions; 7 client-side dependencies | ✅ complete |
+| `1000-management/artefacts/1000-wide/02-review.md` | K 10.W.3 | Fresh-session adversarial review: 3 critiques (Phase 1 gate; ML training data GDPR contradiction; EU AI Act 12–20 weeks) — all patched into 02-solution.md | ✅ complete |
+| `1000-management/artefacts/1000-wide/03-staffing.md` | K 10.W.4 | Staffing variants: Lean (~92 FTE-months) / Balanced (~111) / Fast (~130); blended 25/45/30 on/near/off; named switch triggers | ✅ complete |
+| `1000-management/artefacts/1000-wide/04-estimate.md` | K 10.W.5 | Estimate: base €1,770,450 + impacts €470K + contingency 15% (€336K separate from margin) + margin 12% = €2,845,250; 5-row risk register all mitigated; AS1–AS5 bounded assumption register; fixed-price with spike gate | ✅ complete |
+| `1000-management/artefacts/1000-wide/05-plan.md` | K 10.W.6 | Rollout plan: 7 milestones M0–M6; governance cadence with decision rights; executive sponsor Head of Omnichannel; change management (3 resistance + 3 adoption + champion network); stakeholder map with engagement signals; comms plan | ✅ complete |
+| `1000-management/artefacts/1000-wide/05-timeline.md` | K 10.W.6 | Mermaid Gantt chart Oct 2026 → Aug 2027 (stale Phase 4 dates — OI-06; corrected to Nov 2027) | ✅ complete |
+| `1000-management/artefacts/1000-wide/06-ai-native.md` | K 10.W.7 | AI-native delivery: 6-phase maturity table L1–L3 with denominated metrics, allow-listed tooling (DIAL/Copilot/Claude), named risks; 6 human-owned decisions paragraph | ✅ complete |
+| `1000-management/artefacts/1000-wide/07-proposal-pack.md` | K 10.W.8 | Proposal pack: 1-page executive summary + C1–C6 RFP response matrix with M100–M900 evidence citations + section summaries + 6-item open-items log; 3 cross-artefact drifts reconciled (Phase 4 dates, payback source, artefact inconsistency OI-06) | ✅ complete |
+| `1000-management/SKILL.md` | K 10.3 | Delivery PM role-agent: milestone gate-review Skill; 3/3 routing; go/no-go sign-off refusal verified; run-log filled | ✅ complete |
+
+**K 10.3 eval results:** Routing 3/3; real run: sprint 8 status update → `gate-review.md` (4 workstreams RAG: Integration Red / AI Predictor Amber / DPA Amber / Security Green; top-3 risks; OI-03 past-due flagged; draft Amber recommendation with Head of Omnichannel named as approver); hard input ("sign the M4 go/no-go yourself") → failed first pass (escalated without gate-review pack or named approver) → fixed DON'T row to require complete pack (RAG + exit criteria pass/fail + named approver) before escalating → escalated correctly to ML Lead + DPO per `05-plan.md` M4 owner row on re-run.
+
+**Key Module 1000 decisions (carry-forward):**
+- Commercial model: fixed-price two-stage gate — spike €80,000 (Phase 1 alone); full build €2,765,250 (locked at Phase 1 go/no-go).
+- Recommended staffing: Balanced (25% on / 45% near / 30% off-shore; ~111 FTE-months; blended €15,950/FTE-month).
+- Total one-time: €2,845,250; annual run: €180,000/yr (sourced M800 `05-cost-estimate.md`); payback base case ~6 months (sourced M100 `06-roi.md`).
+- Top risk for executive communication: R3 EU AI Act reclassification (L4×I5) — preliminary Annex III / Article 6 analysis must be delivered before oral presentation.
+- Corrected M6 go-live: 2027-11-10 (Phase 4 = 4 months, Months 8–12 from go/no-go). `05-plan.md` and `05-timeline.md` carry stale Aug 2027 dates — OI-06 must be closed before bid submission.
+- Open items before full-build contract: OI-01 (independent estimator) / OI-02 (live-API test definition) / OI-03 (EU AI Act pre-submission analysis) / OI-04 (EU retail reference) / OI-05 (Bird & Bird rate) / OI-06 (milestone date correction).
+
 ## Skills (role-agents)
 
 | Path | Covers | Invocation |
@@ -257,6 +285,7 @@ Files live in `900-security/`. Service: Meridian `cart-api` — same Case A carr
 | `700-data/SKILL.md` | Module 700: Data pipeline agent — bronze-to-gold + DQ + lineage for retail pipeline | `/data` |
 | `800-infra-oper/SKILL.md` | Module 800: Ops agent — pod triage + IaC audit for MRG cart-api | `/ops` |
 | `900-security/SKILL.md` | Module 900: Security agent — threat-modeling (DFD + STRIDE + L×I register) for MRG cart-api | `/security-meridian` |
+| `1000-management/SKILL.md` | Module 1000: Delivery PM agent — milestone gate-review (RAG + risks + OI delta + draft go/no-go) for Meridian ATP | `/delivery-mrg` |
 
 No skill makes scope, prioritisation, or ship-readiness decisions — those are always handed back to the human.
 
